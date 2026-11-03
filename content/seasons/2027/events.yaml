@@ -1,0 +1,349 @@
+# SciOlyGuide event registry, 2027 season (2026-27).
+# Source for events and conflict blocks: SO 2027 Conflict Blocks sheet
+#   https://www.soinc.org/sites/default/files/uploaded_files/SO_Conflict_Blocks_2027_.pdf
+# Archetypes are editorial and must be confirmed against the 2027 rules manual;
+# allowedResources, calculator and timeLimitMinutes stay null until verified.
+# Schema: packages/schema/src/event.ts (EventConfig)
+season: 2027
+events:
+  - slug: anatomy-physiology
+    name: "Anatomy & Physiology"
+    offerings:
+      - { division: B, conflictBlock: 6 }
+      - { division: C, conflictBlock: 1 }
+    archetypes: [knowledge]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: astronomy
+    name: "Astronomy"
+    offerings:
+      - { division: C, conflictBlock: 3 }
+    archetypes: [knowledge, calculation, identification]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: boomilever
+    name: "Boomilever"
+    offerings:
+      - { division: B, conflictBlock: 7 }
+      - { division: C, conflictBlock: 7 }
+    archetypes: [build, calculation]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: botany
+    name: "Botany"
+    offerings:
+      - { division: B, conflictBlock: 3 }
+      - { division: C, conflictBlock: 3 }
+    archetypes: [knowledge, identification]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: chemistry-lab
+    name: "Chemistry Lab"
+    offerings:
+      - { division: C, conflictBlock: 4 }
+    archetypes: [lab, calculation]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: circuit-lab
+    name: "Circuit Lab"
+    offerings:
+      - { division: B, conflictBlock: 4 }
+      - { division: C, conflictBlock: 5 }
+    archetypes: [calculation, lab]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: codebusters
+    name: "Codebusters"
+    offerings:
+      - { division: B, conflictBlock: 1 }
+      - { division: C, conflictBlock: 2 }
+    archetypes: [cipher]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: crime-busters
+    name: "Crime Busters"
+    offerings:
+      - { division: B, conflictBlock: 6 }
+    archetypes: [lab, identification]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: designer-genes
+    name: "Designer Genes"
+    offerings:
+      - { division: C, conflictBlock: 6 }
+    archetypes: [knowledge]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: disease-detectives
+    name: "Disease Detectives"
+    offerings:
+      - { division: B, conflictBlock: 1 }
+      - { division: C, conflictBlock: 2 }
+    archetypes: [case-study, calculation]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: dynamic-planet
+    name: "Dynamic Planet"
+    offerings:
+      - { division: B, conflictBlock: 4 }
+      - { division: C, conflictBlock: 6 }
+    archetypes: [knowledge]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: electric-vehicle
+    name: "Electric Vehicle"
+    offerings:
+      - { division: C, conflictBlock: 7 }
+    archetypes: [build]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: elastic-launched-glider
+    name: "Elastic Launched Glider"
+    offerings:
+      - { division: B, conflictBlock: 7 }
+    archetypes: [build]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: engineering-cad
+    name: "Engineering CAD"
+    offerings:
+      - { division: C, conflictBlock: 1 }
+    archetypes: [modeling-3d]
+    modules: { remove: [molecule-viewer] }
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+    notes: "Remove molecule-viewer; CAD only."
+  - slug: experimental-design
+    name: "Experimental Design"
+    offerings:
+      - { division: B, conflictBlock: 2 }
+      - { division: C, conflictBlock: 3 }
+    archetypes: [design-writeup, lab]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: food-science
+    name: "Food Science"
+    offerings:
+      - { division: B, conflictBlock: 4 }
+    archetypes: [knowledge, lab]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: forensics
+    name: "Forensics"
+    offerings:
+      - { division: C, conflictBlock: 1 }
+    archetypes: [lab, identification]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: heredity
+    name: "Heredity"
+    offerings:
+      - { division: B, conflictBlock: 5 }
+    archetypes: [knowledge, calculation]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: hovercraft
+    name: "Hovercraft"
+    offerings:
+      - { division: B, conflictBlock: 7 }
+      - { division: C, conflictBlock: 7 }
+    archetypes: [build, calculation]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+    notes: "Has historically included a written physics test alongside the device; confirm for 2027."
+  - slug: meteorology
+    name: "Meteorology"
+    offerings:
+      - { division: B, conflictBlock: 3 }
+    archetypes: [knowledge, calculation]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: mission-possible
+    name: "Mission Possible"
+    offerings:
+      - { division: C, conflictBlock: 7 }
+    archetypes: [build]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: ping-pong-parachute
+    name: "Ping Pong Parachute"
+    offerings:
+      - { division: B, conflictBlock: 7 }
+      - { division: C, conflictBlock: 7 }
+    archetypes: [build]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: protein-modeling
+    name: "Protein Modeling"
+    offerings:
+      - { division: C, conflictBlock: 5 }
+    archetypes: [knowledge, modeling-3d]
+    modules: { remove: [cad-challenges] }
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+    notes: "Remove cad-challenges. Has historically included a pre-built model; confirm for 2027."
+  - slug: remote-sensing
+    name: "Remote Sensing"
+    offerings:
+      - { division: B, conflictBlock: 1 }
+      - { division: C, conflictBlock: 2 }
+    archetypes: [knowledge, calculation, identification]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: rocks-and-minerals
+    name: "Rocks and Minerals"
+    offerings:
+      - { division: B, conflictBlock: 5 }
+      - { division: C, conflictBlock: 4 }
+    archetypes: [identification, knowledge]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: roller-coaster
+    name: "Roller Coaster"
+    offerings:
+      - { division: B, conflictBlock: 7 }
+    archetypes: [build]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: scrambler
+    name: "Scrambler"
+    offerings:
+      - { division: B, conflictBlock: 7 }
+    archetypes: [build]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: solar-system
+    name: "Solar System"
+    offerings:
+      - { division: B, conflictBlock: 2 }
+    archetypes: [knowledge]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: thermodynamics
+    name: "Thermodynamics"
+    offerings:
+      - { division: B, conflictBlock: 5 }
+      - { division: C, conflictBlock: 6 }
+    archetypes: [calculation, knowledge]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+    notes: "Has historically included a pre-built device; confirm for 2027 and add 'build' if so."
+  - slug: water-quality
+    name: "Water Quality"
+    offerings:
+      - { division: B, conflictBlock: 2 }
+      - { division: C, conflictBlock: 5 }
+    archetypes: [knowledge, lab, calculation]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+    notes: "Has historically included a pre-built device; confirm for 2027."
+  - slug: wright-stuff
+    name: "Wright Stuff"
+    offerings:
+      - { division: C, conflictBlock: 7 }
+    archetypes: [build]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}
+  - slug: write-it-do-it
+    name: "Write It Do It"
+    offerings:
+      - { division: B, conflictBlock: 6 }
+    archetypes: [communication]
+    allowedResources: null
+    calculator: null
+    timeLimitMinutes: null
+    rulesVerified: false
+    links: {}

@@ -1,0 +1,17 @@
+{
+  "name": "sciolyguide",
+  "private": true,
+  "type": "module",
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "validate:content": "node scripts/validate-registry.ts content/seasons/2027/events.yaml",
+    "check": "npm run typecheck && npm run validate:content"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.9.0",
+    "yaml": "^2.8.0"
+  },
+  "engines": { "node": ">=22.18" }
+}
