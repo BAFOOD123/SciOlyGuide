@@ -1,6 +1,10 @@
 # SciOlyGuide — Framework Design
 
-> Status: draft v0.1 · Season target: 2026–27 (the "2027" season)
+> Status: v0.2 · Season target: 2026–27 (the "2027" season)
+>
+> **Decisions so far:** free web app · Division C first · per-student accounts that save
+> progress · online-first (autosave with retry; full offline mode deferred) · Codebusters first.
+> See the root README for what has shipped.
 
 ## 1. What we're building
 
@@ -249,14 +253,18 @@ SciOlyGuide/
 - [ ] Email Scioly.org admins about a data partnership and confirm the license
 - [ ] Contact 3–5 invitationals about licensing their tests
 
-**Phase 1: MVP with four events, one per major archetype**
+**Phase 1a: Codebusters (shipped)**
+- [x] Cipher engine for all 11 Div C types, deterministic and test-verified (`packages/codebusters`)
+- [x] Accounts, autosave/resume, per-cipher stats, timed question, mock tests, learn guides
+
+**Phase 1b: three more events, one per major archetype**
 Choose events that test the module system from different angles:
-1. **Codebusters** (cipher): fully generated, so it's a showcase that needs no licensed content
+1. ~~**Codebusters** (cipher)~~ ✅
 2. **Rocks and Minerals** (identification): image-ID drills plus SRS
 3. **Circuit Lab** or **Astronomy** (calculation): template generator plus formula sheet
 4. **Anatomy & Physiology** (knowledge): study guide, flashcards, mock test
 
-Also in Phase 1: accounts, progress tracking, mock tests, offline packs.
+Offline study packs are deferred: the app is online-first with autosave that retries when the connection drops.
 
 **Phase 2: Breadth.** Every non-build event gets a study guide and a practice bank. Add the
 LLM pipeline and the review queue.
@@ -267,9 +275,8 @@ conflict-block-aware rosters.
 **Phase 4: Community.** Contributor and reviewer roles, question reports and fixes, and
 partner tournaments publishing tests directly into the app.
 
-## 10. Open decisions for you
-1. **Business model:** free/donation, or freemium on original content only? This depends
-   on the wiki license.
-2. **Audience:** individual students first, or coach and team tools from day one?
-3. **Divisions:** launch with B and C together, or C first?
-4. **Platform:** web/PWA first (recommended), or native mobile from the start?
+## 10. Decisions
+1. **Business model:** free. ✅
+2. **Audience:** individual students first, with coach and team tools later.
+3. **Divisions:** Division C first. ✅
+4. **Platform:** web app first. ✅ Native mobile comes later if needed.

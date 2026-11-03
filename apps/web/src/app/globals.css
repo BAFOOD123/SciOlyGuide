@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", "JetBrains Mono", "Roboto Mono", Menlo, Consolas, monospace;
+
+  --color-brand-50: oklch(0.97 0.02 275);
+  --color-brand-100: oklch(0.93 0.04 275);
+  --color-brand-200: oklch(0.87 0.08 275);
+  --color-brand-300: oklch(0.78 0.12 275);
+  --color-brand-400: oklch(0.68 0.17 275);
+  --color-brand-500: oklch(0.58 0.21 275);
+  --color-brand-600: oklch(0.51 0.22 275);
+  --color-brand-700: oklch(0.44 0.19 275);
+  --color-brand-800: oklch(0.37 0.15 275);
+  --color-brand-900: oklch(0.3 0.11 275);
+  --color-brand-950: oklch(0.22 0.08 275);
+}
+
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  @apply bg-zinc-50 text-zinc-900 antialiased dark:bg-zinc-950 dark:text-zinc-100;
+}
+
+/* Reusable primitives */
+@utility card {
+  @apply rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900;
+}
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 disabled:cursor-not-allowed disabled:opacity-50;
+}
+@utility btn-primary {
+  @apply bg-brand-600 text-white hover:bg-brand-700;
+}
+@utility btn-secondary {
+  @apply border border-zinc-300 bg-white text-zinc-800 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800;
+}
+@utility btn-ghost {
+  @apply text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100;
+}
+@utility input {
+  @apply w-full rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/25 dark:border-zinc-700 dark:bg-zinc-900;
+}
+@utility chip {
+  @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium;
+}
+
+/* Cipher answer boxes */
+.cell-input {
+  @apply h-8 w-full min-w-0 rounded-md border border-zinc-300 bg-white text-center font-mono text-base font-semibold uppercase text-brand-700 caret-brand-500 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30 dark:border-zinc-700 dark:bg-zinc-950 dark:text-brand-300;
+}
+.cell-input[data-state="conflict"] {
+  @apply border-amber-500 bg-amber-50 dark:bg-amber-950/40;
+}
+.cell-input[data-state="wrong"] {
+  @apply border-red-500 bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-300;
+}
+.cell-input[data-state="hint"] {
+  @apply border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40;
+}
+.cell-input[data-state="peer"] {
+  @apply border-brand-300 bg-brand-50 dark:border-brand-700 dark:bg-brand-950/40;
+}
