@@ -4,14 +4,34 @@
  */
 import {
   SPECIMENS,
+  guessMatches,
+  lookAlikeChoices,
+  photoByKey,
+  photoHints,
+  photoPool,
+  photosFor,
+  skillsFor,
+  specimenForPhoto,
+  specimenFromGuess,
   correctAnswerText,
   generateQuestion,
   isCorrect,
+  type Focus,
   type QResponse,
   type QuestionSpec,
+  type Skill,
   type StationTest,
 } from "@sciolyguide/rocks-minerals";
-import { masteryOf, toPublicQuestion, type Feedback, type RmStats, type SessionView, type SpecimenStat } from "./rocks-types";
+import {
+  masteryOf,
+  toPublicQuestion,
+  type Feedback,
+  type PhotoRef,
+  type PhotoResult,
+  type RmStats,
+  type SessionView,
+  type SpecimenStat,
+} from "./rocks-types";
 
 export const RM_EVENT = "rocks-and-minerals";
 
@@ -77,6 +97,8 @@ export interface AnswerRow {
   specimenId: string | null;
   skill: string;
   correct: boolean;
+  guess?: string | null;
+  at?: number;
 }
 
 /** Answers must be newest first. */
@@ -107,7 +129,26 @@ export function computeRmStats(
     .sort((a, b) => a.correct / a.answered - b.correct / b.answered)
     .slice(0, 8)
     .map((s) => s.id);
+  const mixups = new Map<string, { actual: string; guessed: string; count: number }>();
+  const dayStart = new Date(now);
+  dayStart.setHours(0, 0, 0, 0);
+  const photoToday = { answered: 0, correct: 0 };
+  for (const a of answers) {
+    if (a.skill !== "photo-id") continue;
+    if (a.at !== undefined && a.at >= dayStart.getTime()) {
+      photoToday.answered++;
+      if (a.correct) photoToday.correct++;
+    }
+    if (!a.correct && a.guess && a.specimenId && a.guess !== a.specimenId) {
+      const k = `${a.specimenId}>${a.guess}`;
+      const m = mixups.get(k) ?? { actual: a.specimenId, guessed: a.guess, count: 0 };
+      m.count++;
+      mixups.set(k, m);
+    }
+  }
   return {
+    confusions: [...mixups.values()].sort((x, y) => y.count - x.count).slice(0, 6),
+    photoToday,
     answered: answers.length,
     accuracy: answers.length ? correct / answers.length : null,
     mastered: SPECIMENS.filter((s) => masteryOf(bySpecimen[s.id]) === "mastered").length,
@@ -141,4 +182,65 @@ export function nextBox(prevBox: number | undefined, knew: boolean, boxDays: rea
   const box = knew ? Math.min(5, (prevBox ?? 1) + 1) : 1;
   const dueAt = now + (knew ? boxDays[box - 1]! * 864e5 : 10 * 60_000);
   return { box, dueAt };
+}
+
+/* --------------------------------- Photo ID --------------------------------- */
+
+/** Photos for a deck, weighted toward specimens the student hasn't mastered. */
+export function weightedPhotoPool(focus: Focus, bySpecimen: Record<string, SpecimenStat>): PhotoRef[] {
+  return photoPool(focus).map(({ key, specimenId }) => {
+    const st = bySpecimen[specimenId];
+    const photo = photoByKey(key)!;
+    const m = masteryOf(st);
+    // Spread a specimen's weight across its photos so photo-rich specimens don't dominate.
+    const per = 1 / Math.max(1, photosFor(specimenId).length);
+    const w = m === "new" ? 2 : m === "mastered" ? 0.5 : 1 + 2 * (1 - st!.correct / st!.answered);
+    return { key, width: photo.width, height: photo.height, weight: w * per };
+  });
+}
+
+export function photoChoices(key: string, seed: number): string[] | null {
+  const s = specimenForPhoto(key);
+  return s ? lookAlikeChoices(s, seed) : null;
+}
+
+export function photoHint(key: string, level: number): string | null {
+  const s = specimenForPhoto(key);
+  if (!s || level < 1 || level > 3) return null;
+  return photoHints(s)[level - 1]!;
+}
+
+const FOLLOW_UP_EXCLUDE: Skill[] = ["identify-mineral", "identify-rock", "hardness-order", "grade-order", "energy"];
+
+/** Grade a photo guess. `hints` ≥ 2 still reveals the answer but doesn't count toward mastery. */
+export function gradePhoto(key: string, guess: string, hints: number, followUp: boolean, seed: number): { result: PhotoResult; guessedId: string | null } | null {
+  const s = specimenForPhoto(key);
+  const shown = photoByKey(key);
+  if (!s || !shown) return null;
+  const correct = guessMatches(s, guess);
+  const other = correct ? undefined : specimenFromGuess(guess);
+  let fu: PhotoResult["followUp"];
+  if (followUp) {
+    const skills = skillsFor(s).filter((k) => !FOLLOW_UP_EXCLUDE.includes(k));
+    // Ask about the specimen, never "which of these…" with it among the choices (it's already revealed).
+    for (let k = 0; k < skills.length * 2 && !fu; k++) {
+      const spec: QuestionSpec = { skill: skills[(seed + k) % skills.length]!, seed: seed + k, specimenId: s.id };
+      const q = generateQuestion(spec);
+      if (correctAnswerText(q) !== s.name && !(q.choices ?? []).includes(s.name)) fu = { spec, question: toPublicQuestion(q) };
+    }
+  }
+  return {
+    guessedId: other?.id ?? null,
+    result: {
+      correct,
+      counted: correct && hints < 2,
+      name: s.name,
+      specimenId: s.id,
+      tip: s.tip,
+      shown,
+      photos: photosFor(s.id),
+      guessed: other ? { id: other.id, name: other.name, tip: other.tip } : undefined,
+      followUp: fu,
+    },
+  };
 }

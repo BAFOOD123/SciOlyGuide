@@ -60,7 +60,7 @@ interface State {
   events: string[];
   rmSessions: Record<string, DemoRmSession>;
   /** Newest first. */
-  rmAnswers: { specimenId: string | null; skill: string; correct: boolean; at: number }[];
+  rmAnswers: { specimenId: string | null; skill: string; correct: boolean; guess?: string | null; at: number }[];
   cards: Record<string, { box: number; dueAt: number }>;
 }
 

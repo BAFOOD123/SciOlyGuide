@@ -22,10 +22,21 @@ page with the official description and a link to soinc.org.
   formulas, ores, special tests, ordering by hardness, rock classification, igneous texture and
   composition, intrusive/extrusive pairs, parent rocks, metamorphic grade, depositional energy, plus
   hand-written geology concept questions.
+- **Photo ID**, like scioly.rocks: 243 real specimen photos from Wikimedia Commons cover all 92
+  specimens, with two or three per specimen so you learn the variety, not one picture. You can
+  type the name or choose from look-alikes. There are three hints (category, key property, first
+  letter), and a follow-up property question after each photo, like a tournament station.
+  Weak specimens come up more often. Your mix-ups ("Topaz mistaken for Ulexite") are tracked,
+  and photo files have hashed names so the answer can't be read from the image URL.
+- **Specimen sheets with photos and a Wikipedia summary**. Every photo is credited to its author
+  and license (CC BY, CC BY-SA, CC0 or public domain), and there's a full
+  [credits page](apps/web/src/app/rocks-and-minerals/credits). The photo pipeline lives in
+  `packages/rocks-minerals/scripts/`.
 - **Practice sets** with instant feedback and the specimen sheet. Weak specimens come up more often.
 - **Station tests** in tournament format: one specimen per station, timed rotation you can't go
   back from (or untimed), and multiple choice or written names.
-- **Flashcards** with Leitner spaced repetition (1, 3, 7, 21 days).
+- **Flashcards** with Leitner spaced repetition (1, 3, 7, 21 days): photo → name, properties → name,
+  or name → properties.
 - **Specimen gallery** (search and filter, mastery dots) and **reference tables**: Mohs scale,
   igneous texture × composition, sedimentary and metamorphic classification, Bowen's series and the
   Wentworth grain-size scale.

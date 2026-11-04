@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useState, useTransition } from "react";
-import { hardnessText, specimenById, type Specimen } from "@sciolyguide/rocks-minerals";
+import { hardnessText, photosFor, specimenById, type Specimen } from "@sciolyguide/rocks-minerals";
+import { photoSrc } from "@/lib/rocks-types";
 import { reviewCard } from "@/app/rocks-and-minerals/actions";
 import { SpecimenCard, TYPE_STYLE, typeLabel, typeOf } from "./SpecimenCard";
 
@@ -19,7 +20,9 @@ function frontClues(s: Specimen): string[] {
   return [`Texture: ${s.texture}`, `Made of: ${s.minerals.join(", ")}`, `Forms in: ${s.environment}`];
 }
 
-export function Flashcards({ deck, direction }: { deck: DeckCard[]; direction: "name" | "clues" }) {
+export function Flashcards({ deck: allCards, direction }: { deck: DeckCard[]; direction: "name" | "clues" | "photo" }) {
+  // Photo cards only use specimens that have photos.
+  const deck = direction === "photo" ? allCards.filter((c) => photosFor(c.id).length) : allCards;
   const [i, setI] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [tally, setTally] = useState({ knew: 0, missed: 0 });
@@ -78,7 +81,17 @@ export function Flashcards({ deck, direction }: { deck: DeckCard[]; direction: "
         <span>{card.isNew ? "New card" : `Box ${card.box} of 5`}</span>
       </div>
       <div className="card min-h-72 space-y-4 p-6">
-        {direction === "name" ? (
+        {direction === "photo" ? (
+          <div className="space-y-2 text-center">
+            <p className="text-sm font-medium text-zinc-500">Which specimen is this?</p>
+            {(() => {
+              const ph = photosFor(s.id);
+              const p = ph[(i + card.box) % ph.length]!;
+              // eslint-disable-next-line @next/next/no-img-element
+              return <img src={photoSrc(p.key)} alt="Specimen to identify" className="mx-auto max-h-80 w-auto max-w-full rounded-xl object-contain" />;
+            })()}
+          </div>
+        ) : direction === "name" ? (
           <div className="space-y-2 text-center">
             <span className={`chip ${TYPE_STYLE[typeOf(s)]}`}>{typeLabel(s)}</span>
             <p className="text-3xl font-bold">{s.name}</p>
@@ -96,8 +109,8 @@ export function Flashcards({ deck, direction }: { deck: DeckCard[]; direction: "
         )}
         {flipped && (
           <div className="border-t border-zinc-200 pt-4 dark:border-zinc-800">
-            {direction === "clues" && <p className="mb-3 text-2xl font-bold">{s.name}</p>}
-            <SpecimenCard s={s} compact={direction === "name"} />
+            {direction !== "name" && <p className="mb-3 text-2xl font-bold">{s.name}</p>}
+            <SpecimenCard s={s} compact={direction === "name"} photos={direction !== "photo"} />
           </div>
         )}
       </div>

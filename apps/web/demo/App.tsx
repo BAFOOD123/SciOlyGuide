@@ -13,7 +13,9 @@ import { Flashcards } from "@/components/rocks/Flashcards";
 import { SpecimenGallery } from "@/components/rocks/SpecimenGallery";
 import { ReferenceTables } from "@/components/rocks/ReferenceTables";
 import { BUILD_BLOCK, DIV_C_EVENTS, eventBySlug } from "@/lib/events";
-import { buildDeck, buildSessionView } from "@/lib/rocks-core";
+import { buildDeck, buildSessionView, weightedPhotoPool } from "@/lib/rocks-core";
+import { PhotoDrill } from "@/components/rocks/PhotoDrill";
+import { CreditsList } from "@/components/rocks/CreditsList";
 import { masteryOf } from "@/lib/rocks-types";
 import { SPECIMENS, specimensFor, type Focus } from "@sciolyguide/rocks-minerals";
 import { demoRmStats, finishRm } from "./rocks-actions";
@@ -504,9 +506,27 @@ function RmQuizDemo({ id }: { id: string }) {
 }
 
 const FOCI: Focus[] = ["all", "minerals", "rocks", "igneous", "sedimentary", "metamorphic"];
+function RmPhotoDemo({ deck }: { deck: string }) {
+  const focus = FOCI.includes(deck as Focus) ? (deck as Focus) : "all";
+  const stats = demoRmStats();
+  return (
+    <div className="space-y-5">
+      <RmCrumb>Photo ID</RmCrumb>
+      <header className="space-y-1">
+        <h1 className="text-3xl font-bold tracking-tight">Photo ID</h1>
+        <p className="max-w-2xl text-zinc-600 dark:text-zinc-400">
+          Real specimen photos from Wikimedia Commons, several per specimen. Name what you see, use hints if you&apos;re stuck, then answer a follow-up
+          about it, the way a tournament station works.
+        </p>
+      </header>
+      <PhotoDrill key={focus} pool={weightedPhotoPool(focus, stats.bySpecimen)} deck={focus} today={stats.photoToday} />
+    </div>
+  );
+}
+
 function RmCardsDemo({ arg }: { arg: string }) {
-  const front = arg.endsWith("-name") ? "name" : "clues";
-  const deckName = arg.replace(/-(name|clues)$/, "");
+  const front = arg.endsWith("-name") ? "name" : arg.endsWith("-photo") ? "photo" : "clues";
+  const deckName = arg.replace(/-(name|clues|photo)$/, "");
   const focus = FOCI.includes(deckName as Focus) ? (deckName as Focus) : "all";
   const rows = Object.entries(store.get().cards).map(([cardId, c]) => ({ cardId, ...c }));
   const deck = buildDeck(rows, specimensFor(focus).map((s) => s.id));
@@ -561,6 +581,14 @@ function route(view: string) {
       </div>
     );
   if (view.startsWith("rocks-quiz-")) return <RmQuizDemo key={view} id={view.slice(11)} />;
+  if (view.startsWith("rocks-photo-")) return <RmPhotoDemo deck={view.slice(12)} />;
+  if (view === "rocks-credits")
+    return (
+      <div className="space-y-6">
+        <RmCrumb>Photo credits</RmCrumb>
+        <CreditsList />
+      </div>
+    );
   if (view.startsWith("rocks-cards-")) return <RmCardsDemo arg={view.slice(12)} />;
   if (view.startsWith("event-")) return <EventDemo slug={view.slice(6)} />;
   if (view === "timed") return <TimedView />;

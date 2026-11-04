@@ -4,7 +4,7 @@ import { db, schema } from "./db";
 import { RM_EVENT, buildDeck, buildSessionView, computeRmStats } from "./rocks-core";
 import type { RmStats, SessionView } from "./rocks-types";
 
-export { RM_EVENT, feedbackFor, flattenPlan, gradeSession } from "./rocks-core";
+export { RM_EVENT, feedbackFor, flattenPlan, gradeSession, weightedPhotoPool } from "./rocks-core";
 
 const toData = (s: schema.QuizSession) => ({
   ...s,
@@ -19,7 +19,13 @@ export function sessionView(s: schema.QuizSession): SessionView {
 export async function getRmStats(userId: string): Promise<RmStats> {
   const [answers, cards, sessions] = await Promise.all([
     db
-      .select({ specimenId: schema.rmAnswers.specimenId, skill: schema.rmAnswers.skill, correct: schema.rmAnswers.correct })
+      .select({
+        specimenId: schema.rmAnswers.specimenId,
+        skill: schema.rmAnswers.skill,
+        correct: schema.rmAnswers.correct,
+        guess: schema.rmAnswers.guess,
+        answeredAt: schema.rmAnswers.answeredAt,
+      })
       .from(schema.rmAnswers)
       .where(eq(schema.rmAnswers.userId, userId))
       .orderBy(desc(schema.rmAnswers.answeredAt))
@@ -33,7 +39,7 @@ export async function getRmStats(userId: string): Promise<RmStats> {
       .limit(6),
   ]);
   return computeRmStats(
-    answers,
+    answers.map((a) => ({ ...a, at: a.answeredAt.getTime() })),
     cards.map((c) => c.dueAt.getTime()),
     sessions.map((s) => ({
       id: s.id,

@@ -1,0 +1,1 @@
+ALTER TABLE `rm_answers` ADD `guess` text;

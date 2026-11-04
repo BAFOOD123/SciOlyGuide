@@ -14,8 +14,8 @@ import {
 import { newId, requireUser } from "@/lib/auth";
 import { db, schema } from "@/lib/db";
 import { RM_EVENT, feedbackFor, flattenPlan, getOwnedSession, getRmStats, gradeSession } from "@/lib/rocks";
-import { nextBox } from "@/lib/rocks-core";
-import { BOX_DAYS, type Feedback } from "@/lib/rocks-types";
+import { gradePhoto, nextBox, photoChoices, photoHint } from "@/lib/rocks-core";
+import { BOX_DAYS, type Feedback, type PhotoResult } from "@/lib/rocks-types";
 
 const FOCI: Focus[] = ["all", "minerals", "rocks", "igneous", "sedimentary", "metamorphic"];
 const randomSeed = () => Math.floor(Math.random() * 0xffffffff) >>> 0;
@@ -151,4 +151,52 @@ export async function reviewCard(cardId: string, knew: boolean): Promise<{ box: 
   if (card) await db.update(schema.flashcards).set({ box, dueAt, reviews: card.reviews + 1, updatedAt: now }).where(where);
   else await db.insert(schema.flashcards).values({ userId: user.id, cardId, box, dueAt, reviews: 1, updatedAt: now });
   return { box, dueAt: dueAt.getTime() };
+}
+
+/* ---------------------------------- Photo ID --------------------------------- */
+
+const seed32 = () => Math.floor(Math.random() * 0xffffffff) >>> 0;
+
+/** Look-alike choices for a photo (multiple-choice mode). */
+export async function photoRound(key: string): Promise<{ choices: string[] | null }> {
+  await requireUser();
+  return { choices: photoChoices(String(key), seed32()) };
+}
+
+export async function photoHintAction(key: string, level: number): Promise<{ hint: string | null }> {
+  await requireUser();
+  return { hint: photoHint(String(key), Number(level)) };
+}
+
+export async function photoAnswer(key: string, guess: string, hints: number, followUp: boolean): Promise<PhotoResult | null> {
+  const user = await requireUser();
+  const graded = gradePhoto(String(key), String(guess ?? "").slice(0, 60), Math.max(0, Math.min(3, Number(hints) || 0)), !!followUp, seed32());
+  if (!graded) return null;
+  await db.insert(schema.rmAnswers).values({
+    id: newId(),
+    userId: user.id,
+    specimenId: graded.result.specimenId,
+    skill: "photo-id",
+    correct: graded.result.counted,
+    guess: graded.guessedId,
+    answeredAt: new Date(),
+  });
+  return graded.result;
+}
+
+/** Grade the follow-up question asked about a specimen after its photo was identified. */
+export async function photoFollowUp(spec: { skill: string; seed: number; specimenId?: string }, response: unknown): Promise<Feedback | null> {
+  const user = await requireUser();
+  if (!spec?.specimenId || !SPECIMENS.some((s) => s.id === spec.specimenId) || !SKILLS.some((k) => k.skill === spec.skill)) return null;
+  const clean = { skill: spec.skill as Skill, seed: Number(spec.seed) >>> 0, specimenId: spec.specimenId };
+  const fb = feedbackFor(clean, cleanResponse(response));
+  await db.insert(schema.rmAnswers).values({
+    id: newId(),
+    userId: user.id,
+    specimenId: clean.specimenId,
+    skill: clean.skill,
+    correct: fb.correct,
+    answeredAt: new Date(),
+  });
+  return fb;
 }

@@ -136,6 +136,8 @@ export const rmAnswers = sqliteTable(
     specimenId: text("specimen_id"),
     skill: text("skill").notNull(),
     correct: integer("correct", { mode: "boolean" }).notNull(),
+    /** Photo ID: the specimen id the student guessed (for mix-up tracking). */
+    guess: text("guess"),
     answeredAt: integer("answered_at", { mode: "timestamp_ms" }).notNull(),
   },
   (t) => [index("rm_answers_user_idx").on(t.userId, t.answeredAt)],

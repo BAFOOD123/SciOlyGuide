@@ -1,7 +1,7 @@
 /** Demo stand-in for src/app/rocks-and-minerals/actions.ts (same names and signatures). */
 import { SKILLS, buildPractice, buildStationTest, type Focus, type QResponse, type Skill } from "@sciolyguide/rocks-minerals";
-import { computeRmStats, feedbackFor, flattenPlan, gradeSession, nextBox } from "@/lib/rocks-core";
-import { BOX_DAYS, type Feedback } from "@/lib/rocks-types";
+import { computeRmStats, feedbackFor, flattenPlan, gradePhoto, gradeSession, nextBox, photoChoices, photoHint } from "@/lib/rocks-core";
+import { BOX_DAYS, type Feedback, type PhotoResult } from "@/lib/rocks-types";
 import { navigate, newId, store } from "./store";
 
 const seed = () => Math.floor(Math.random() * 0xffffffff) >>> 0;
@@ -93,4 +93,34 @@ export async function reviewCard(cardId: string, knew: boolean): Promise<{ box: 
     s.cards[cardId] = next;
   }, true);
   return next;
+}
+
+/* ---------------------------------- Photo ID --------------------------------- */
+
+const s32 = () => Math.floor(Math.random() * 0xffffffff) >>> 0;
+
+export async function photoRound(key: string): Promise<{ choices: string[] | null }> {
+  return { choices: photoChoices(key, s32()) };
+}
+
+export async function photoHintAction(key: string, level: number): Promise<{ hint: string | null }> {
+  return { hint: photoHint(key, level) };
+}
+
+export async function photoAnswer(key: string, guess: string, hints: number, followUp: boolean): Promise<PhotoResult | null> {
+  const graded = gradePhoto(key, guess, hints, followUp, s32());
+  if (!graded) return null;
+  store.update((s) => {
+    s.rmAnswers.unshift({ specimenId: graded.result.specimenId, skill: "photo-id", correct: graded.result.counted, guess: graded.guessedId, at: Date.now() });
+  }, true);
+  return graded.result;
+}
+
+export async function photoFollowUp(spec: { skill: string; seed: number; specimenId?: string }, response: QResponse): Promise<Feedback | null> {
+  if (!spec.specimenId) return null;
+  const fb = feedbackFor(spec as Parameters<typeof feedbackFor>[0], response);
+  store.update((s) => {
+    s.rmAnswers.unshift({ specimenId: spec.specimenId!, skill: spec.skill, correct: fb.correct, at: Date.now() });
+  }, true);
+  return fb;
 }

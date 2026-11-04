@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { SPECIMENS, TEST_LABEL, hardnessText, type Specimen } from "@sciolyguide/rocks-minerals";
+import { SPECIMENS, TEST_LABEL, hardnessText, photosFor, type Specimen } from "@sciolyguide/rocks-minerals";
+import { photoSrc } from "@/lib/rocks-types";
 import { SpecimenCard, TYPE_STYLE, typeLabel, typeOf } from "./SpecimenCard";
 
 type Filter = "all" | "mineral" | "igneous" | "sedimentary" | "metamorphic";
@@ -100,9 +101,15 @@ export function SpecimenGallery({ mastery }: { mastery: Record<string, "new" | "
                 aria-expanded={isOpen}
                 onClick={() => setOpen(isOpen ? null : s.id)}
               >
-                <span className="mt-0.5 w-7 shrink-0 font-mono text-xs text-zinc-500">#{String(s.n).padStart(2, "0")}</span>
+                {photosFor(s.id)[0] ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={photoSrc(photosFor(s.id)[0]!.key)} alt="" loading="lazy" className="size-12 shrink-0 rounded-lg object-cover" />
+                ) : (
+                  <span className="size-12 shrink-0 rounded-lg bg-zinc-100 dark:bg-zinc-800" />
+                )}
                 <span className="min-w-0 flex-1">
                   <span className="flex flex-wrap items-center gap-2">
+                    <span className="font-mono text-xs text-zinc-500">#{String(s.n).padStart(2, "0")}</span>
                     <span className="font-semibold">{s.name}</span>
                     <span className={`chip ${TYPE_STYLE[typeOf(s)]}`}>{typeOf(s) === "mineral" ? "Mineral" : typeLabel(s).replace(" rock", "")}</span>
                     <span className={`size-2 rounded-full ${MASTERY_DOT[mastery[s.id] ?? "new"]}`} title={mastery[s.id] ?? "new"} />

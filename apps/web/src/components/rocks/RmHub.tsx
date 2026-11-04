@@ -4,7 +4,14 @@ import Link from "next/link";
 import { useState } from "react";
 import { SKILLS, specimenById, type Focus } from "@sciolyguide/rocks-minerals";
 import { startRmPractice, startRmStations } from "@/app/rocks-and-minerals/actions";
-import type { RmStats } from "@/lib/rocks-types";
+import { photoSrc, type RmStats } from "@/lib/rocks-types";
+import { SPECIMENS as ALL_SPECIMENS, photosFor } from "@sciolyguide/rocks-minerals";
+
+const PHOTO_COUNT = ALL_SPECIMENS.reduce((n, s) => n + photosFor(s.id).length, 0);
+/** A few recognizable specimens for the Photo ID preview. */
+const PREVIEW = ["labradorite", "malachite", "gneiss", "azurite", "obsidian", "coquina"]
+  .map((id) => photosFor(id)[0]?.key)
+  .filter((k): k is string => !!k);
 
 const FOCUS: { value: Focus; label: string }[] = [
   { value: "all", label: "All specimens and concepts" },
@@ -40,7 +47,8 @@ export function RmHub({ stats }: { stats: RmStats }) {
   const [seconds, setSeconds] = useState(120);
   const [stationTyped, setStationTyped] = useState(false);
   const [deck, setDeck] = useState<Focus>("all");
-  const [direction, setDirection] = useState<"name" | "clues">("clues");
+  const [direction, setDirection] = useState<"name" | "clues" | "photo">("photo");
+  const [photoDeck, setPhotoDeck] = useState<Focus>("all");
 
   const skillRows = SKILLS.map((s) => ({ ...s, st: stats.bySkill[s.skill] }))
     .filter((s) => s.st && s.st.answered >= 2)
@@ -69,6 +77,40 @@ export function RmHub({ stats }: { stats: RmStats }) {
         <Stat label="Answered" value={String(stats.answered)} />
         <Stat label="Accuracy" value={stats.accuracy === null ? "—" : `${Math.round(stats.accuracy * 100)}%`} />
         <Stat label="Cards due" value={String(stats.dueCards)} hint={`${stats.newCards} not started`} />
+      </section>
+
+      <section className="card grid gap-5 overflow-hidden p-0 md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+        <div className="grid grid-cols-3 gap-1 bg-zinc-900 p-1">
+          {PREVIEW.map((k) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img key={k} src={photoSrc(k)} alt="" className="aspect-square w-full rounded object-cover" loading="lazy" />
+          ))}
+        </div>
+        <div className="flex flex-col gap-3 p-5">
+          <h2 className="text-xl font-bold">Photo ID</h2>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            Name real specimens from photos: {PHOTO_COUNT} Wikimedia Commons photos covering all 92 specimens. Type the name or pick from look-alikes,
+            use hints when stuck, and answer a follow-up about each specimen. Your mix-ups are tracked below.
+          </p>
+          <div className="flex flex-wrap items-end gap-3">
+            <label className="space-y-1 text-sm">
+              <span className="text-xs font-medium text-zinc-500">Deck</span>
+              <select id="photo-deck" className="input w-48" value={photoDeck} onChange={(e) => setPhotoDeck(e.target.value as Focus)}>
+                {FOCUS.map((f) => (
+                  <option key={f.value} value={f.value}>
+                    {f.value === "all" ? "All 92 specimens" : f.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <Link href={`/rocks-and-minerals/photo-id?deck=${photoDeck}`} className="btn btn-primary">
+              Start Photo ID
+            </Link>
+          </div>
+          <p className="text-xs text-zinc-500">
+            Today: {stats.photoToday.correct}/{stats.photoToday.answered} correct
+          </p>
+        </div>
       </section>
 
       <section className="grid gap-4 lg:grid-cols-3">
@@ -166,7 +208,8 @@ export function RmHub({ stats }: { stats: RmStats }) {
           </label>
           <label className="space-y-1 text-sm">
             <span className="text-xs font-medium text-zinc-500">Front of card</span>
-            <select id="rm-direction" className="input" value={direction} onChange={(e) => setDirection(e.target.value as "name" | "clues")}>
+            <select id="rm-direction" className="input" value={direction} onChange={(e) => setDirection(e.target.value as "name" | "clues" | "photo")}>
+              <option value="photo">Photo → name</option>
               <option value="clues">Properties → name</option>
               <option value="name">Name → properties</option>
             </select>
@@ -194,6 +237,29 @@ export function RmHub({ stats }: { stats: RmStats }) {
           </p>
         </Link>
       </section>
+      <p className="text-xs text-zinc-500">
+        Photos: Wikimedia Commons contributors. Summaries: Wikipedia (CC BY-SA 4.0).{" "}
+        <Link className="underline" href="/rocks-and-minerals/credits">
+          Full credits
+        </Link>
+      </p>
+
+      {stats.confusions.length > 0 && (
+        <section className="card space-y-3 p-5">
+          <h2 className="font-semibold">Your Photo ID mix-ups</h2>
+          <ul className="grid gap-2 sm:grid-cols-2">
+            {stats.confusions.map((c) => (
+              <li key={`${c.actual}>${c.guessed}`} className="flex items-center gap-2 text-sm">
+                <span className="font-medium">{specimenById(c.actual)?.name}</span>
+                <span className="text-zinc-400">mistaken for</span>
+                <span className="font-medium">{specimenById(c.guessed)?.name}</span>
+                <span className="ml-auto chip bg-zinc-100 tabular-nums text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">×{c.count}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="text-xs text-zinc-500">Compare them side by side in the specimen gallery.</p>
+        </section>
+      )}
 
       {(stats.weakest.length > 0 || skillRows.length > 0) && (
         <section className="grid gap-4 md:grid-cols-2">

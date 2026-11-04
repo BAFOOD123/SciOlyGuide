@@ -1,4 +1,5 @@
-import { TEST_LABEL, hardnessText, sgText, type Specimen } from "@sciolyguide/rocks-minerals";
+import { TEST_LABEL, WIKI_LICENSE, hardnessText, photosFor, sgText, wikiFor, type Specimen } from "@sciolyguide/rocks-minerals";
+import { PhotoStrip } from "./PhotoStrip";
 
 export const TYPE_STYLE: Record<string, string> = {
   mineral: "bg-sky-100 text-sky-800 dark:bg-sky-900/50 dark:text-sky-200",
@@ -16,7 +17,9 @@ export function typeLabel(s: Specimen): string {
 }
 
 /** Full property sheet for one specimen. */
-export function SpecimenCard({ s, compact }: { s: Specimen; compact?: boolean }) {
+export function SpecimenCard({ s, compact, photos = true }: { s: Specimen; compact?: boolean; photos?: boolean }) {
+  const wiki = wikiFor(s.id);
+  const pics = photos ? photosFor(s.id) : [];
   const rows: [string, string][] =
     s.kind === "mineral"
       ? [
@@ -53,6 +56,7 @@ export function SpecimenCard({ s, compact }: { s: Specimen; compact?: boolean })
           <span className={`chip ${TYPE_STYLE[typeOf(s)]}`}>{typeLabel(s)}</span>
         </div>
       )}
+      {pics.length > 0 && <PhotoStrip photos={pics} name={s.name} />}
       <dl className="grid gap-x-4 gap-y-1.5 text-sm sm:grid-cols-[9rem_1fr]">
         {rows.map(([k, v]) => (
           <div key={k} className="contents">
@@ -64,6 +68,21 @@ export function SpecimenCard({ s, compact }: { s: Specimen; compact?: boolean })
       <p className="rounded-lg bg-brand-50 px-3 py-2 text-sm text-brand-900 dark:bg-brand-950/50 dark:text-brand-100">
         <b>ID tip:</b> {s.tip}
       </p>
+      {wiki && (
+        <blockquote className="space-y-1 border-l-2 border-zinc-300 pl-3 text-sm text-zinc-700 dark:border-zinc-700 dark:text-zinc-300">
+          <p>{wiki.extract}</p>
+          <footer className="text-xs text-zinc-500">
+            From Wikipedia,{" "}
+            <a className="underline" href={wiki.url} target="_blank" rel="noreferrer">
+              {wiki.title}
+            </a>{" "}
+            ·{" "}
+            <a className="underline" href={WIKI_LICENSE.url} target="_blank" rel="noreferrer">
+              {WIKI_LICENSE.label}
+            </a>
+          </footer>
+        </blockquote>
+      )}
     </div>
   );
 }

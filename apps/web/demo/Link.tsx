@@ -10,6 +10,7 @@ export function toView(href: string): string {
     const [, section, arg] = path.slice("/rocks-and-minerals".length).split("/");
     if (!section) return "rocks";
     if (section === "quiz" && arg) return `rocks-quiz-${arg}`;
+    if (section === "photo-id") return `rocks-photo-${new URLSearchParams(qs).get("deck") ?? "all"}`;
     if (section === "flashcards") {
       const p = new URLSearchParams(qs);
       return `rocks-cards-${p.get("deck") ?? "all"}-${p.get("front") ?? "clues"}`;

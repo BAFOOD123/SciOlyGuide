@@ -21,7 +21,7 @@ export default async function FlashcardsPage({ searchParams }: { searchParams: P
         </Link>{" "}
         / <span className="text-zinc-800 dark:text-zinc-200">Flashcards</span>
       </nav>
-      <Flashcards deck={deck} direction={sp.front === "name" ? "name" : "clues"} />
+      <Flashcards deck={deck} direction={sp.front === "name" ? "name" : sp.front === "photo" ? "photo" : "clues"} />
     </div>
   );
 }
