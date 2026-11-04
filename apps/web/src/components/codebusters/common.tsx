@@ -225,3 +225,44 @@ export function useActiveTimer(startMs: number, running: boolean): number {
   }, [running]);
   return ms;
 }
+
+/**
+ * Two-step button: the first click asks, the second confirms. Used instead of
+ * window.confirm(), which some embedded browsers (and the demo viewer) block.
+ */
+export function ConfirmButton({
+  onConfirm,
+  children,
+  confirmLabel,
+  className,
+  disabled,
+}: {
+  onConfirm: () => void;
+  children: React.ReactNode;
+  confirmLabel: string;
+  className?: string;
+  disabled?: boolean;
+}) {
+  const [armed, setArmed] = useState(false);
+  useEffect(() => {
+    if (!armed) return;
+    const t = setTimeout(() => setArmed(false), 4000);
+    return () => clearTimeout(t);
+  }, [armed]);
+  return (
+    <button
+      type="button"
+      className={`${className ?? ""} ${armed ? "ring-2 ring-amber-500" : ""}`}
+      disabled={disabled}
+      aria-live="polite"
+      onClick={() => {
+        if (armed) {
+          setArmed(false);
+          onConfirm();
+        } else setArmed(true);
+      }}
+    >
+      {armed ? confirmLabel : children}
+    </button>
+  );
+}

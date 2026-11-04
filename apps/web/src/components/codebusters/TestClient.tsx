@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from
 import type { Response } from "@sciolyguide/codebusters";
 import { checkTimedInTest, saveProgress, submitTest } from "@/app/codebusters/actions";
 import type { PublicPuzzle, Reveal, ToolNotes } from "@/lib/codebusters-types";
-import { PuzzleHeader, RevealPanel, SaveIndicator, ToolsPanel, formatMs, useAssistPref, type SaveStatus } from "./common";
+import { ConfirmButton, PuzzleHeader, RevealPanel, SaveIndicator, ToolsPanel, formatMs, useAssistPref, type SaveStatus } from "./common";
 import { annotatorFor } from "./tools";
 import { FinalAnswer, Workspace } from "./Workspace";
 
@@ -133,13 +133,9 @@ export function TestClient({ testId, endsAt, questions, timed: timedInit }: Prop
           Assist mode
         </label>
         <SaveIndicator status={status} />
-        <button
-          className="btn btn-primary"
-          disabled={pending}
-          onClick={() => confirm("Submit your test for grading? You can't change answers afterwards.") && submit()}
-        >
+        <ConfirmButton className="btn btn-primary" disabled={pending} onConfirm={submit} confirmLabel="Click again to submit">
           Submit test
-        </button>
+        </ConfirmButton>
       </div>
 
       <nav aria-label="Questions" className="flex flex-wrap gap-1.5">

@@ -36,7 +36,9 @@
     ".next/types/**/*.ts",
     "scripts/**/*.ts",
     "drizzle.config.ts",
-    ".next/dev/types/**/*.ts"
+    ".next/dev/types/**/*.ts",
+    "demo/**/*.ts",
+    "demo/**/*.tsx"
   ],
   "exclude": [
     "node_modules"

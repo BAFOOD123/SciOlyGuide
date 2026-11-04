@@ -1,0 +1,59 @@
+/* Demo stylesheet: the app's globals.css (inlined by build.mjs) plus artifact theming. */
+@import "tailwindcss" source("..");
+@source "../src/components";
+@source "./";
+
+/* `dark:` follows the viewer: system preference unless data-theme="light", or data-theme="dark". */
+@custom-variant dark {
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not([data-theme="light"]), :root:not([data-theme="light"]) *) {
+      @slot;
+    }
+  }
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+}
+
+:root {
+  --page-bg: #fafafa;
+  --page-fg: #18181b;
+  --band: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --page-bg: #09090b;
+    --page-fg: #f4f4f5;
+    --band: #09090b;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --page-bg: #09090b;
+  --page-fg: #f4f4f5;
+  --band: #09090b;
+  color-scheme: dark;
+}
+
+/*__GLOBALS__*/
+
+body {
+  background: var(--page-bg);
+  color: var(--page-fg);
+  font-size: 16px;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  z-index: 50;
+  background: var(--band);
+}
+.gutter {
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

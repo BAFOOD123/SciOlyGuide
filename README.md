@@ -47,6 +47,12 @@ npm run check                   # typecheck + registry validation + engine tests
 npm run dev -w @sciolyguide/web # migrates local.db, then http://localhost:3000
 ```
 
+## Demo build
+
+`npm run demo:build -w @sciolyguide/web` bundles the real Codebusters components into a single
+self-contained HTML file (`apps/web/demo/dist/sciolyguide-demo.html`). It has no server and no
+accounts; progress is kept in the browser. It's useful for showing the app without hosting it.
+
 ## Deploy (free)
 
 1. Create a free [Turso](https://turso.tech) database and an auth token.

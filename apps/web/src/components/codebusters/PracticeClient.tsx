@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState, useTransition } from "react"
 import type { CipherInfo, PuzzleOptions, Response } from "@sciolyguide/codebusters";
 import { checkAnswer, hintLetter, newPractice, revealAnswer, saveProgress } from "@/app/codebusters/actions";
 import type { AttemptState, CheckResult, PublicPuzzle, Reveal, ToolNotes } from "@/lib/codebusters-types";
-import { PuzzleHeader, RevealPanel, SaveIndicator, ToolsPanel, formatMs, useActiveTimer, useAssistPref, useAutosave } from "./common";
+import { ConfirmButton, PuzzleHeader, RevealPanel, SaveIndicator, ToolsPanel, formatMs, useActiveTimer, useAssistPref, useAutosave } from "./common";
 import { annotatorFor } from "./tools";
 import { FinalAnswer, Workspace } from "./Workspace";
 
@@ -45,7 +45,6 @@ export function PracticeClient({ puzzle, attempt, info, options, initialReveal }
     });
 
   const giveUp = () => {
-    if (!confirm("Show the answer? This puzzle will count as unsolved.")) return;
     startTransition(async () => {
       const r = await revealAnswer(attempt.id, response, elapsed);
       if (r) setReveal(r);
@@ -182,9 +181,9 @@ export function PracticeClient({ puzzle, attempt, info, options, initialReveal }
                     Hint a letter
                   </button>
                 )}
-                <button className="btn btn-ghost" onClick={giveUp} disabled={pending}>
+                <ConfirmButton className="btn btn-ghost" onConfirm={giveUp} disabled={pending} confirmLabel="Click again: counts as unsolved">
                   Show answer
-                </button>
+                </ConfirmButton>
               </>
             ) : (
               <form action={newPractice.bind(null, puzzle.type, opts)}>

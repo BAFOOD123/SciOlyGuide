@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState, useTransition } from "react"
 import { SCORING, type Response } from "@sciolyguide/codebusters";
 import { checkAnswer, revealAnswer, saveProgress, startTimed } from "@/app/codebusters/actions";
 import type { AttemptState, CheckResult, PublicPuzzle, Reveal, ToolNotes } from "@/lib/codebusters-types";
-import { PuzzleHeader, RevealPanel, SaveIndicator, ToolsPanel, formatMs, useAssistPref, useAutosave } from "./common";
+import { ConfirmButton, PuzzleHeader, RevealPanel, SaveIndicator, ToolsPanel, formatMs, useAssistPref, useAutosave } from "./common";
 import { Workspace } from "./Workspace";
 
 export function TimedClient({ puzzle, attempt, startedAt }: { puzzle: PublicPuzzle; attempt: AttemptState; startedAt: number }) {
@@ -93,19 +93,19 @@ export function TimedClient({ puzzle, attempt, startedAt }: { puzzle: PublicPuzz
               <button className="btn btn-primary" onClick={check} disabled={pending}>
                 Check
               </button>
-              <button
+              <ConfirmButton
                 className="btn btn-ghost"
                 disabled={pending}
-                onClick={() => {
-                  if (!confirm("Give up and show the answer?")) return;
+                confirmLabel="Click again to give up"
+                onConfirm={() =>
                   startTransition(async () => {
                     const r = await revealAnswer(attempt.id, response, 0);
                     if (r) setReveal(r);
-                  });
-                }}
+                  })
+                }
               >
                 Give up
-              </button>
+              </ConfirmButton>
             </>
           ) : (
             <form action={startTimed}>
