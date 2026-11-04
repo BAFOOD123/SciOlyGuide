@@ -4,20 +4,20 @@ import { getUser } from "@/lib/auth";
 
 const FEATURES = [
   {
-    title: "Every 2027 cipher, unlimited",
-    body: "Aristocrats (K1–K3), Patristocrats, Xenocrypts, Baconian, Fractionated Morse, Cryptarithms, Porta, Columnar, Nihilist, Checkerboard, and the new Homophonic. All generated fresh and checked by tests.",
-  },
-  {
-    title: "A real solving workspace",
-    body: "Type a letter once and it fills everywhere. You get a live frequency table, conflict warnings, a trigraph decoder, a column arranger and a Polybius builder. Switch to paper mode to practice without them.",
+    title: "Codebusters: every 2027 cipher",
+    body: "Unlimited fresh puzzles for all 11 Division C cipher types, including the new Homophonic. The workspace fills in repeated letters and gives you a frequency table, trigraph decoder and column arranger. Switch to paper mode to practice without them.",
   },
   {
     title: "Scored like the tournament",
     body: "Two free errors, then −100 each. The timed question earns a bonus, special bonus questions count, and the 50-minute mock tests are built for Regionals or States.",
   },
   {
-    title: "Your progress, saved",
-    body: "Sign in on any device and pick up mid-puzzle. Track accuracy and solve times for each cipher, and get pointed at your weakest one.",
+    title: "Rocks and Minerals, all 92 specimens",
+    body: "Identify specimens from their properties, take timed station-rotation tests, review with spaced-repetition flashcards, and browse a full property sheet for every rock and mineral on the official list.",
+  },
+  {
+    title: "Your events, your progress",
+    body: "Choose the events you compete in, with conflict-block warnings. Your home page tracks each one, and everything saves to your account.",
   },
 ];
 
@@ -31,8 +31,8 @@ export default async function Home() {
           The Science Olympiad study guide that <span className="text-brand-600">trains you for the event</span>.
         </h1>
         <p className="text-lg text-zinc-600 dark:text-zinc-400">
-          Each event gets tools built around how it&apos;s actually competed. We&apos;re starting with Codebusters: unlimited practice for every
-          cipher on the 2027 list, with your progress saved to your account.
+          Each event gets tools built around how it&apos;s actually competed. Codebusters and Rocks and Minerals are live now, and the rest of the
+          Division C events are on the way.
         </p>
         <div className="flex flex-wrap justify-center gap-3">
           <Link href="/signup" className="btn btn-primary px-6 py-3 text-base">
@@ -77,7 +77,7 @@ export default async function Home() {
       </section>
 
       <section className="text-center text-sm text-zinc-500">
-        Coming next: Anatomy & Physiology, Rocks and Minerals, Circuit Lab, Astronomy, and the rest of the Division C events.
+        Coming next: Anatomy and Physiology, Circuit Lab, Astronomy, and the rest of the Division C events.
       </section>
     </div>
   );

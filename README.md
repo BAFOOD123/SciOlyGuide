@@ -1,7 +1,34 @@
 # SciOlyGuide
 
 A **free** Science Olympiad study app for **Division C** students. Every event page is built
-around how that event is actually competed. **Codebusters is live**; the other Div C events are next.
+around how that event is actually competed. **Codebusters and Rocks and Minerals are live**; the
+other Div C events are next.
+
+## Home: choose your events
+
+Students pick the events they compete in from all 23 Division C events. The list is grouped by the
+official 2027 categories and shows Science Olympiad's own short descriptions. Choices save to the
+account and drive the header navigation. If two chosen events share a 2027 national conflict block,
+the home page warns that one student can't compete in both. Events still in progress get an info
+page with the official description and a link to soinc.org.
+
+## What's in Rocks and Minerals
+
+- **All 92 specimens** from the official Ward's kit list linked on soinc.org (52 minerals, 12 igneous,
+  18 sedimentary, 10 metamorphic). Each has hardness, specific gravity, streak, luster, color, crystal
+  system, cleavage/fracture, special tests, formation, uses and an ID tip (`packages/rocks-minerals`).
+- **Question generators** for 21 skills: identifying specimens from their properties (every
+  distractor is ruled out by at least one clue), hardness, streak, luster, cleavage, crystal system,
+  formulas, ores, special tests, ordering by hardness, rock classification, igneous texture and
+  composition, intrusive/extrusive pairs, parent rocks, metamorphic grade, depositional energy, plus
+  hand-written geology concept questions.
+- **Practice sets** with instant feedback and the specimen sheet. Weak specimens come up more often.
+- **Station tests** in tournament format: one specimen per station, timed rotation you can't go
+  back from (or untimed), and multiple choice or written names.
+- **Flashcards** with Leitner spaced repetition (1, 3, 7, 21 days).
+- **Specimen gallery** (search and filter, mastery dots) and **reference tables**: Mohs scale,
+  igneous texture × composition, sedimentary and metamorphic classification, Bowen's series and the
+  Wentworth grain-size scale.
 
 ## What's in Codebusters
 
@@ -9,6 +36,8 @@ around how that event is actually competed. **Codebusters is live**; the other D
   (random/K1/K2/K3 + keyword questions), Patristocrat, Xenocrypt (Spanish, with Ñ), Baconian,
   Fractionated Morse, Cryptarithm, Porta, Complete Columnar, Nihilist, Checkerboard, and the new
   Homophonic. The 2027 removals (Hill, Affine, Atbash and Caesar for Div C) are not included.
+- **Official descriptions.** Each cipher's learn page explains it the way Science Olympiad's
+  Codebusters Overview (soinc.org) does, paraphrased with history notes and a source link.
 - **Solving workspace.** Type a letter once and it fills everywhere. Conflicts get flagged and
   matching letters highlight. Assist tools: frequency table, plain→cipher alphabet, Baconian A/B
   sorter, trigraph notes with live Morse decode, Polybius and Homophonic table builders, column
@@ -29,6 +58,7 @@ around how that event is actually competed. **Codebusters is live**; the other D
 ```
 apps/web/                  Next.js 16 app (App Router, Tailwind 4, Drizzle + libSQL/SQLite)
 packages/codebusters/      Pure-TS cipher engine: seeded generators, graders, scoring, guides (+ tests)
+packages/rocks-minerals/   Specimen data, seeded question generators, station tests, reference tables (+ tests)
 packages/schema/           Shared event/question types
 content/seasons/2027/      Event registry for the season
 docs/DESIGN.md             Overall framework design

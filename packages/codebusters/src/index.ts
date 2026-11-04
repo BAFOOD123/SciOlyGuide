@@ -10,4 +10,4 @@ export { portaLetter, portaTable } from "./ciphers/porta.ts";
 export { columnarDecrypt, columnarEncrypt } from "./ciphers/columnar.ts";
 export { polybiusSquare, homophonicDecode, homophonicNumber } from "./ciphers/polybius.ts";
 export { countSolutions } from "./ciphers/cryptarithm.ts";
-export { GUIDES, type Guide } from "./guides.ts";
+export { EVENT_DESCRIPTION, GUIDES, OFFICIAL, OVERVIEW, RULES_2027, type Guide, type Official, type Source } from "./guides.ts";

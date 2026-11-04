@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit && npm run typecheck -w @sciolyguide/web",
     "validate:content": "node scripts/validate-registry.ts content/seasons/2027/events.yaml",
     "check": "npm run typecheck && npm run validate:content && npm test",
-    "test": "npm test -w @sciolyguide/codebusters",
+    "test": "npm test -w @sciolyguide/codebusters && npm test -w @sciolyguide/rocks-minerals",
     "build": "npm run build -w @sciolyguide/web"
   },
   "devDependencies": {

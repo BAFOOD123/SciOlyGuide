@@ -1,4 +1,4 @@
-import { index, integer, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
+import { index, integer, primaryKey, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 export const users = sqliteTable(
   "users",
@@ -85,6 +85,79 @@ export const attempts = sqliteTable(
   ],
 );
 
+/** The events a student has chosen to study. */
+export const userEvents = sqliteTable(
+  "user_events",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    eventSlug: text("event_slug").notNull(),
+    addedAt: integer("added_at", { mode: "timestamp_ms" }).notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.eventSlug] })],
+);
+
+/** A run of questions: a practice set or a timed station test (Rocks and Minerals). */
+export const quizSessions = sqliteTable(
+  "quiz_sessions",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    event: text("event").notNull(),
+    mode: text("mode", { enum: ["practice", "stations"] }).notNull(),
+    /** JSON: practice → QuestionSpec[]; stations → StationTest. */
+    plan: text("plan").notNull(),
+    /** JSON: QResponse | null per question (flattened order). */
+    responses: text("responses").notNull(),
+    /** JSON: settings shown back to the student (focus, timing…). */
+    config: text("config").notNull(),
+    stationSeconds: integer("station_seconds"),
+    startedAt: integer("started_at", { mode: "timestamp_ms" }).notNull(),
+    endsAt: integer("ends_at", { mode: "timestamp_ms" }),
+    finishedAt: integer("finished_at", { mode: "timestamp_ms" }),
+    score: integer("score"),
+    maxScore: integer("max_score").notNull(),
+  },
+  (t) => [index("quiz_sessions_user_idx").on(t.userId, t.event, t.startedAt)],
+);
+
+/** One answered question, for per-specimen and per-skill mastery. */
+export const rmAnswers = sqliteTable(
+  "rm_answers",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    sessionId: text("session_id").references(() => quizSessions.id, { onDelete: "cascade" }),
+    specimenId: text("specimen_id"),
+    skill: text("skill").notNull(),
+    correct: integer("correct", { mode: "boolean" }).notNull(),
+    answeredAt: integer("answered_at", { mode: "timestamp_ms" }).notNull(),
+  },
+  (t) => [index("rm_answers_user_idx").on(t.userId, t.answeredAt)],
+);
+
+/** Leitner-box flashcards (one per specimen per student). */
+export const flashcards = sqliteTable(
+  "flashcards",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    cardId: text("card_id").notNull(),
+    box: integer("box").notNull(),
+    dueAt: integer("due_at", { mode: "timestamp_ms" }).notNull(),
+    reviews: integer("reviews").notNull().default(0),
+    updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.cardId] })],
+);
+
 export type User = typeof users.$inferSelect;
 export type Attempt = typeof attempts.$inferSelect;
 export type TestRow = typeof tests.$inferSelect;
+export type QuizSession = typeof quizSessions.$inferSelect;

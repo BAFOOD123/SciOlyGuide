@@ -2,10 +2,24 @@
 import type { AnchorHTMLAttributes } from "react";
 
 export function toView(href: string): string {
-  const path = href.replace(/^\/codebusters/, "");
-  if (path === "" || path === "/") return "codebusters";
-  if (path === "/test") return "tests";
-  const [, section, arg] = path.split("/");
+  const [pathQ = ""] = href.split("#");
+  const [path = "", qs = ""] = pathQ.split("?");
+  if (path === "/" || path === "/dashboard") return "home";
+  if (path.startsWith("/events/")) return `event-${path.slice(8)}`;
+  if (path.startsWith("/rocks-and-minerals")) {
+    const [, section, arg] = path.slice("/rocks-and-minerals".length).split("/");
+    if (!section) return "rocks";
+    if (section === "quiz" && arg) return `rocks-quiz-${arg}`;
+    if (section === "flashcards") {
+      const p = new URLSearchParams(qs);
+      return `rocks-cards-${p.get("deck") ?? "all"}-${p.get("front") ?? "clues"}`;
+    }
+    return `rocks-${section}`;
+  }
+  const cb = path.replace(/^\/codebusters/, "");
+  if (cb === "" || cb === "/") return "codebusters";
+  if (cb === "/test") return "tests";
+  const [, section, arg] = cb.split("/");
   if (section === "test" && arg) return `test-${arg}`;
   return arg ? `${section}-${arg}` : (section ?? "codebusters");
 }

@@ -1,5 +1,97 @@
 import type { CipherType } from "./types.ts";
 
+export interface Source {
+  label: string;
+  url: string;
+}
+
+export const OVERVIEW: Source = {
+  label: "Science Olympiad Codebusters Overview (soinc.org)",
+  url: "https://www.soinc.org/sites/default/files/uploaded_files/CodeBusters_Overview25_0.pdf",
+};
+export const RULES_2027: Source = {
+  label: "2026–27 Codebusters rules summary (toebes.com, linked from soinc.org)",
+  url: "https://toebes.com/codebusters/Rule-Summary-2027.html",
+};
+
+/** Science Olympiad's own one-line description of the event (soinc.org/codebusters-c). */
+export const EVENT_DESCRIPTION = {
+  text: "Teams will cryptanalyze and decode encrypted messages using cryptanalysis techniques for historical and modern advanced ciphers.",
+  source: { label: "soinc.org · Codebusters C", url: "https://www.soinc.org/codebusters-c" } satisfies Source,
+};
+
+export interface Official {
+  /** How Science Olympiad's materials define the cipher (paraphrased). */
+  definition: string;
+  /** Origin and history, where the official overview gives it. */
+  history?: string;
+  source: Source;
+}
+
+/** Definitions paraphrased from Science Olympiad's Codebusters Overview. */
+export const OFFICIAL: Record<CipherType, Official> = {
+  aristocrat: {
+    definition:
+      "The standard substitution cipher, the kind printed in newspapers as a Cryptoquote, with one restriction: no letter may stand for itself. The alphabet can be random, or keyed to make solving easier. In a K1 alphabet the keyword is in the plaintext alphabet, in K2 it is in the ciphertext alphabet, and in K3 the same keyword is used in both, shifted.",
+    source: OVERVIEW,
+  },
+  patristocrat: {
+    definition:
+      "Follows the same rules as an Aristocrat, but all spaces and punctuation are removed. Only the letters remain, split into groups for convenience. Groups of five are the American Cryptogram Association standard.",
+    source: OVERVIEW,
+  },
+  xenocrypt: {
+    definition:
+      "Identical to an Aristocrat, except the plaintext is in a language other than English (Spanish in Science Olympiad). It is one of the less-attempted questions, which makes it a frequent tiebreaker between teams.",
+    source: OVERVIEW,
+  },
+  baconian: {
+    definition:
+      "A steganographic cipher: it hides the message in how the text is presented, not in what it says. Each letter becomes a group of five A/B choices. The two values can be disguised as styles of type (such as bold and plain), as sets of symbols, or as ordinary-looking words.",
+    history: "Devised by Francis Bacon in 1605.",
+    source: OVERVIEW,
+  },
+  "fractionated-morse": {
+    definition:
+      "The plaintext is converted to Morse code and cut into groups of three symbols. A keyed alphabet then assigns one cipher letter to each three-symbol pattern. The first alphabet letter stands for •••, the last (usually Z) for ××–, and there's no letter for ×××.",
+    history: "Invented in 1960 by an American Cryptogram Association member writing as FIDDLE.",
+    source: OVERVIEW,
+  },
+  cryptarithm: {
+    definition:
+      "A cross between a cipher and a math problem: an arithmetic equation with letters in place of digits. Science Olympiad uses base 10, so every problem has exactly 10 different letters, and the answer comes from sorting the letters by their digit values.",
+    history: "Their origin is unclear, but cryptarithms appear as far back as 1864.",
+    source: OVERVIEW,
+  },
+  porta: {
+    definition:
+      "A forerunner of the Vigenère cipher that uses only thirteen alphabets. Each pair of keyword letters (AB, CD, …, YZ) selects one of them.",
+    history:
+      "Invented by Giovanni Battista della Porta in 1563, it was the first cipher to use a keyword that varies along the message.",
+    source: OVERVIEW,
+  },
+  columnar: {
+    definition:
+      "A transposition cipher: the letters keep their identity but change position. The plaintext is written into a rectangle row by row, a key numbers the columns, and the ciphertext is read out column by column in key order.",
+    source: OVERVIEW,
+  },
+  nihilist: {
+    definition:
+      "First a Polybius square is built from a keyword, using an alphabet without J. Each letter gets a two-digit row-and-column number from the square. A second keyword's numbers are then added to the plaintext numbers one letter at a time, so every ciphertext value falls between 22 and 110.",
+    source: OVERVIEW,
+  },
+  checkerboard: {
+    definition:
+      "Built on a keyed 5×5 Polybius square whose rows and columns are labeled by two five-letter keywords instead of the digits 1–5. Each plaintext letter becomes a pair of letters (row label, then column label). The 2027 rules also require every letter of both keywords to appear in the ciphertext.",
+    source: RULES_2027,
+  },
+  homophonic: {
+    definition:
+      "New for the 2026–27 season. A 25-letter alphabet (I and J combined) is numbered in four rows, 01–25, 26–50, 51–75 and 76–00. Each row starts under one letter of a four-letter keyword, so every plaintext letter can be written four different ways. That flattens the letter frequencies that normally give a substitution cipher away.",
+    source: RULES_2027,
+  },
+};
+
 export interface Guide {
   type: CipherType;
   summary: string;

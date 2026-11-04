@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CIPHERS, SCORING, cipherInfo, isCipherType } from "@sciolyguide/codebusters";
+import { CIPHERS, EVENT_DESCRIPTION, SCORING, cipherInfo, isCipherType } from "@sciolyguide/codebusters";
 import { requireUser } from "@/lib/auth";
 import { getUserStats, recentAttempts } from "@/lib/codebusters";
 import { createTest, startTimed } from "./actions";
@@ -32,7 +32,13 @@ export default async function CodebustersHub() {
         <div className="space-y-1">
           <p className="text-sm font-medium text-brand-600">Division C · 2026–27</p>
           <h1 className="text-3xl font-bold tracking-tight">Codebusters</h1>
-          <p className="max-w-2xl text-zinc-600 dark:text-zinc-400">
+          <blockquote className="max-w-2xl text-zinc-700 dark:text-zinc-300">
+            “{EVENT_DESCRIPTION.text}”{" "}
+            <a className="text-xs text-zinc-500 underline" href={EVENT_DESCRIPTION.source.url} target="_blank" rel="noreferrer">
+              {EVENT_DESCRIPTION.source.label}
+            </a>
+          </blockquote>
+          <p className="max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">
             Unlimited generated puzzles for every 2027 cipher, scored by tournament rules ({SCORING.freeErrors} free errors, then −
             {SCORING.penaltyPerError} each). Your progress saves to your account.
           </p>

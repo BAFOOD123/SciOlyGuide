@@ -41,16 +41,36 @@ export interface DemoTest {
   maxScore: number;
 }
 
+export interface DemoRmSession {
+  id: string;
+  mode: "practice" | "stations";
+  plan: string;
+  responses: string;
+  stationSeconds: number | null;
+  startedAt: number;
+  endsAt: number | null;
+  finishedAt: number | null;
+  score: number | null;
+  maxScore: number;
+}
+
 interface State {
   attempts: Record<string, DemoAttempt>;
   tests: Record<string, DemoTest>;
+  events: string[];
+  rmSessions: Record<string, DemoRmSession>;
+  /** Newest first. */
+  rmAnswers: { specimenId: string | null; skill: string; correct: boolean; at: number }[];
+  cards: Record<string, { box: number; dueAt: number }>;
 }
 
+const EMPTY = (): State => ({ attempts: {}, tests: {}, events: [], rmSessions: {}, rmAnswers: [], cards: {} });
+
 const KEY = "sog-demo-v1";
-let state: State = { attempts: {}, tests: {} };
+let state: State = EMPTY();
 try {
   const raw = localStorage.getItem(KEY);
-  if (raw) state = JSON.parse(raw) as State;
+  if (raw) state = { ...EMPTY(), ...(JSON.parse(raw) as Partial<State>) };
 } catch {}
 
 const listeners = new Set<() => void>();
@@ -104,8 +124,17 @@ export const store = {
     } else persist();
   },
   attempts: () => Object.values(state.attempts),
+  /** Mutate state directly, then save (quiet = don't re-render). */
+  update(fn: (s: State) => void, quiet = false) {
+    fn(state);
+    if (quiet) {
+      try {
+        localStorage.setItem(KEY, JSON.stringify(state));
+      } catch {}
+    } else persist();
+  },
   reset() {
-    state = { attempts: {}, tests: {} };
+    state = EMPTY();
     persist();
   },
 };

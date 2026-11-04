@@ -257,10 +257,14 @@ SciOlyGuide/
 - [x] Cipher engine for all 11 Div C types, deterministic and test-verified (`packages/codebusters`)
 - [x] Accounts, autosave/resume, per-cipher stats, timed question, mock tests, learn guides
 
-**Phase 1b: three more events, one per major archetype**
+**Phase 1b (in progress)**
+- [x] Home page with event picker, conflict-block warnings and per-event navigation
+- [x] Rocks and Minerals: 92 specimens, 21 question skills, practice, station tests, flashcards, gallery, reference
+
+**Phase 1c: more events, one per major archetype**
 Choose events that test the module system from different angles:
 1. ~~**Codebusters** (cipher)~~ ✅
-2. **Rocks and Minerals** (identification): image-ID drills plus SRS
+2. ~~**Rocks and Minerals** (identification)~~ ✅ (property-based ID; photo ID needs a licensed image set)
 3. **Circuit Lab** or **Astronomy** (calculation): template generator plus formula sheet
 4. **Anatomy & Physiology** (knowledge): study guide, flashcards, mock test
 

@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import { getUser } from "@/lib/auth";
+import { DIV_C_EVENTS } from "@/lib/events";
+import { getMyEvents } from "@/lib/user-events";
 import { signOut } from "./(auth)/actions";
 import "./globals.css";
 
@@ -18,6 +20,10 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const user = await getUser();
+  // Header shows the student's live events (or every live event until they pick some).
+  const chosen = user ? await getMyEvents(user.id) : [];
+  const live = DIV_C_EVENTS.filter((e) => e.href);
+  const navEvents = chosen.length ? live.filter((e) => chosen.includes(e.slug)) : live;
   return (
     <html lang="en">
       <body className="min-h-dvh">
@@ -36,19 +42,28 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               </span>
             </Link>
             {user && (
-              <nav className="flex items-center gap-1 text-sm">
-                <Link href="/dashboard" className="btn btn-ghost hidden px-3 sm:inline-flex">
-                  Dashboard
+              <nav className="flex min-w-0 items-center gap-0.5 overflow-x-auto text-sm" aria-label="Main">
+                <Link href="/dashboard" className="btn btn-ghost px-2 sm:px-3">
+                  Home
                 </Link>
-                <Link href="/codebusters" className="btn btn-ghost px-2 sm:px-3">
-                  Codebusters
-                </Link>
+                {navEvents.map((e) => (
+                  <Link key={e.slug} href={e.href!} className="btn btn-ghost whitespace-nowrap px-2 sm:px-3">
+                    {e.slug === "rocks-and-minerals" ? (
+                      <>
+                        <span className="sm:hidden">Rocks</span>
+                        <span className="hidden sm:inline">Rocks &amp; Minerals</span>
+                      </>
+                    ) : (
+                      e.name
+                    )}
+                  </Link>
+                ))}
               </nav>
             )}
             <div className="ml-auto flex items-center gap-2 text-sm">
               {user ? (
                 <>
-                  <span className="hidden text-zinc-500 sm:inline">
+                  <span className="hidden text-zinc-500 lg:inline">
                     Signed in as <span className="font-medium text-zinc-800 dark:text-zinc-200">{user.displayName}</span>
                   </span>
                   <form action={signOut}>

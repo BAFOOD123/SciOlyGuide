@@ -23,6 +23,8 @@ const js = await build({
   define: { "process.env.NODE_ENV": '"production"' },
   alias: {
     "@/app/codebusters/actions": resolve(here, "actions.ts"),
+    "@/app/home-actions": resolve(here, "home-actions.ts"),
+    "@/app/rocks-and-minerals/actions": resolve(here, "rocks-actions.ts"),
     "next/link": resolve(here, "Link.tsx"),
     "@": resolve(web, "src"),
   },
@@ -34,9 +36,9 @@ const cssSrc = readFileSync(resolve(here, "demo.css"), "utf8").replace("/*__GLOB
 const css = (await postcss([tailwind({ base: web, optimize: true })]).process(cssSrc, { from: resolve(here, "demo.css") })).css;
 
 const code = js.outputFiles[0].text.replace(/<\/script/gi, "<\\/script");
-const html = `<title>SciOlyGuide Codebusters</title>
+const html = `<title>SciOlyGuide</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Free Division C Codebusters practice: every 2027 cipher, generated fresh and scored by tournament rules.">
+<meta name="description" content="Free Division C Science Olympiad study app: choose your events, with Codebusters and Rocks and Minerals live.">
 <style>${css}</style>
 <div id="root"></div>
 <script>${code}</script>

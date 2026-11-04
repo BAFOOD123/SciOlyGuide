@@ -50,7 +50,7 @@ export const CIPHERS: readonly CipherInfo[] = [
     type: "aristocrat",
     name: "Aristocrat",
     family: "Substitution",
-    blurb: "Monoalphabetic substitution with word spaces. Random, K1, K2 and K3 alphabets, plus keyword questions.",
+    blurb: "The classic Cryptoquote: a substitution cipher with word spaces where no letter stands for itself. Random, K1, K2 or K3 alphabets.",
     levels: { regional: ["decode", "cryptanalysis", "keyword"], state: ["decode", "cryptanalysis", "keyword"] },
     options: [
       {
@@ -88,7 +88,7 @@ export const CIPHERS: readonly CipherInfo[] = [
     type: "patristocrat",
     name: "Patristocrat",
     family: "Substitution",
-    blurb: "Monoalphabetic substitution with spaces removed and letters in groups of five.",
+    blurb: "An Aristocrat with the spaces and punctuation stripped out and the letters in groups of five.",
     levels: { regional: ["decode", "cryptanalysis"], state: ["decode", "cryptanalysis"] },
     options: [
       {
@@ -117,7 +117,7 @@ export const CIPHERS: readonly CipherInfo[] = [
     type: "xenocrypt",
     name: "Xenocrypt",
     family: "Substitution",
-    blurb: "An Aristocrat in Spanish, using the 27-letter alphabet with Ñ. Accents are dropped.",
+    blurb: "An Aristocrat in Spanish (27 letters, with Ñ). Teams often skip it, so it often decides close tests.",
     levels: { regional: ["decode", "cryptanalysis"], state: ["decode", "cryptanalysis"] },
     options: [
       {
@@ -146,7 +146,7 @@ export const CIPHERS: readonly CipherInfo[] = [
     type: "baconian",
     name: "Baconian",
     family: "Other",
-    blurb: "Each letter becomes five A/B symbols. Work out which symbols mean A and which mean B.",
+    blurb: "Francis Bacon's 1605 steganography: each letter hides as five A/B symbols in disguise.",
     levels: { regional: ["cryptanalysis"], state: ["cryptanalysis"] },
     options: [
       {
@@ -165,7 +165,7 @@ export const CIPHERS: readonly CipherInfo[] = [
     type: "fractionated-morse",
     name: "Fractionated Morse",
     family: "Other",
-    blurb: "Morse code (x between letters, xx between words) cut into trigraphs, each replaced by a letter.",
+    blurb: "Morse code cut into three-symbol groups, each replaced by a letter from a keyed alphabet.",
     levels: { regional: ["cryptanalysis"], state: ["cryptanalysis"] },
     options: [LENGTH],
     defaults: { length: "medium" },
@@ -174,7 +174,7 @@ export const CIPHERS: readonly CipherInfo[] = [
     type: "cryptarithm",
     name: "Cryptarithm",
     family: "Other",
-    blurb: "Letter arithmetic in base 10. Find each letter's digit and give the word for 0–9.",
+    blurb: "Arithmetic with letters in place of digits. Base 10, so there are exactly ten letters to place.",
     levels: { regional: ["cryptanalysis"], state: ["cryptanalysis"] },
     options: [
       {
@@ -193,7 +193,7 @@ export const CIPHERS: readonly CipherInfo[] = [
     type: "porta",
     name: "Porta",
     family: "Polyalphabetic",
-    blurb: "A reciprocal polyalphabetic cipher. Each keyword letter pair selects one of 13 alphabets.",
+    blurb: "Della Porta's 1563 cipher: 13 reciprocal alphabets, chosen by pairs of keyword letters.",
     levels: { regional: ["decode"], state: ["decode", "cryptanalysis"] },
     options: [DECODE_OR_CRYPT, LENGTH],
     defaults: { mode: "decode", length: "medium" },
@@ -202,7 +202,7 @@ export const CIPHERS: readonly CipherInfo[] = [
     type: "columnar",
     name: "Complete Columnar",
     family: "Transposition",
-    blurb: "The plaintext is written in rows and read off by columns in a secret order. Recover it from a crib.",
+    blurb: "Written in by rows, read out by columns in a keyed order. Recover the order from a crib.",
     levels: { regional: ["cryptanalysis"], state: ["cryptanalysis"] },
     options: [
       {
@@ -222,7 +222,7 @@ export const CIPHERS: readonly CipherInfo[] = [
     type: "nihilist",
     name: "Nihilist Substitution",
     family: "Polybius",
-    blurb: "Polybius-square coordinates plus a repeating keyword's coordinates.",
+    blurb: "Polybius-square numbers plus a repeating keyword's numbers, giving values from 22 to 110.",
     levels: { regional: ["decode"], state: ["decode", "cryptanalysis"] },
     options: [DECODE_OR_CRYPT, LENGTH],
     defaults: { mode: "decode", length: "medium" },
@@ -231,7 +231,7 @@ export const CIPHERS: readonly CipherInfo[] = [
     type: "checkerboard",
     name: "Checkerboard",
     family: "Polybius",
-    blurb: "A keyed Polybius square whose rows and columns are labeled by two five-letter keywords.",
+    blurb: "A keyed Polybius square with two five-letter keywords labeling its rows and columns.",
     levels: { regional: ["decode", "cryptanalysis"], state: ["decode", "cryptanalysis"] },
     options: [DECODE_OR_CRYPT, LENGTH],
     defaults: { mode: "decode", length: "medium" },
@@ -240,7 +240,7 @@ export const CIPHERS: readonly CipherInfo[] = [
     type: "homophonic",
     name: "Homophonic",
     family: "Substitution",
-    blurb: "New for 2027. Four numbered rows, each keyed by a keyword letter, so every letter has four numbers.",
+    blurb: "New for 2027: a four-row number table keyed by a four-letter keyword, so every letter has four numbers.",
     levels: { regional: ["cryptanalysis"], state: ["cryptanalysis", "decode"] },
     options: [
       {

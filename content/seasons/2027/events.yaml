@@ -243,14 +243,14 @@ events:
     name: "Protein Modeling"
     offerings:
       - { division: C, conflictBlock: 5 }
-    archetypes: [knowledge, modeling-3d]
+    archetypes: [knowledge, modeling-3d, build]
     modules: { remove: [cad-challenges] }
     allowedResources: null
     calculator: null
     timeLimitMinutes: null
     rulesVerified: false
     links: {}
-    notes: "Remove cad-challenges. Has historically included a pre-built model; confirm for 2027."
+    notes: "Remove cad-challenges. 2027 official description confirms a pre-built physical model (H1N1 hemagglutinin sialic acid binding site) plus a written exam."
   - slug: remote-sensing
     name: "Remote Sensing"
     offerings:
@@ -308,13 +308,13 @@ events:
     offerings:
       - { division: B, conflictBlock: 5 }
       - { division: C, conflictBlock: 6 }
-    archetypes: [calculation, knowledge]
+    archetypes: [calculation, knowledge, build]
     allowedResources: null
     calculator: null
     timeLimitMinutes: null
     rulesVerified: false
     links: {}
-    notes: "Has historically included a pre-built device; confirm for 2027 and add 'build' if so."
+    notes: "2027 official description confirms a pre-built heat-collecting device plus a written test."
   - slug: water-quality
     name: "Water Quality"
     offerings:
