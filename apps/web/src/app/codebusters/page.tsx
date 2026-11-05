@@ -38,6 +38,9 @@ export default async function CodebustersHub() {
               {EVENT_DESCRIPTION.source.label}
             </a>
           </blockquote>
+          <Link href="/events/codebusters" className="inline-flex text-sm font-medium text-brand-600 hover:underline dark:text-brand-300">
+            Read the full event guide →
+          </Link>
           <p className="max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">
             Unlimited generated puzzles for every 2027 cipher, scored by tournament rules ({SCORING.freeErrors} free errors, then −
             {SCORING.penaltyPerError} each). Your progress saves to your account.

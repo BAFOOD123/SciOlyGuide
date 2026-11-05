@@ -64,3 +64,104 @@ body {
 .cell-input[data-state="peer"] {
   @apply border-brand-300 bg-brand-50 dark:border-brand-700 dark:bg-brand-950/40;
 }
+
+/* ===== Event guide (guide-prose) ===== */
+.guide-prose {
+  @apply text-[15px] leading-relaxed text-zinc-700 dark:text-zinc-300;
+}
+.guide-prose h2 {
+  @apply mt-10 mb-3 scroll-mt-6 border-b border-zinc-200 pb-1.5 text-2xl font-bold tracking-tight text-zinc-900 first:mt-0 dark:border-zinc-800 dark:text-zinc-50;
+}
+.guide-prose h3 {
+  @apply mt-7 mb-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100;
+}
+.guide-prose h4 {
+  @apply mt-5 mb-1.5 font-semibold text-zinc-800 dark:text-zinc-200;
+}
+.guide-prose p {
+  @apply my-3;
+}
+.guide-prose a {
+  @apply font-medium text-brand-600 underline-offset-2 hover:underline dark:text-brand-300;
+}
+.guide-prose ul {
+  @apply my-3 list-disc space-y-1 pl-5;
+}
+.guide-prose ol {
+  @apply my-3 list-decimal space-y-1 pl-5;
+}
+.guide-prose strong {
+  @apply font-semibold text-zinc-900 dark:text-zinc-100;
+}
+.guide-prose code {
+  @apply rounded bg-zinc-100 px-1 py-0.5 font-mono text-[0.85em] text-brand-700 dark:bg-zinc-800 dark:text-brand-300;
+}
+.guide-prose hr {
+  @apply my-8 border-zinc-200 dark:border-zinc-800;
+}
+.guide-prose blockquote {
+  @apply my-4 border-l-4 border-zinc-300 pl-4 italic text-zinc-600 dark:border-zinc-700 dark:text-zinc-400;
+}
+.guide-prose .table-wrap {
+  @apply my-4 overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-800;
+}
+.guide-prose table {
+  @apply w-full border-collapse text-left text-sm;
+}
+.guide-prose thead {
+  @apply bg-zinc-50 dark:bg-zinc-900;
+}
+.guide-prose th {
+  @apply border-b border-zinc-200 px-3 py-2 font-semibold text-zinc-800 dark:border-zinc-800 dark:text-zinc-100;
+}
+.guide-prose td {
+  @apply border-b border-zinc-100 px-3 py-2 align-top dark:border-zinc-800/70;
+}
+.guide-prose tbody tr:last-child td {
+  @apply border-b-0;
+}
+.guide-prose .callout {
+  @apply my-4 rounded-xl border px-4 py-3 text-sm;
+}
+.guide-prose .callout-note {
+  @apply border-brand-200 bg-brand-50 text-brand-900 dark:border-brand-900 dark:bg-brand-950/40 dark:text-brand-100;
+}
+.guide-prose .callout-tip {
+  @apply border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-100;
+}
+.guide-prose .callout-warning {
+  @apply border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-100;
+}
+.guide-prose details {
+  @apply my-2 rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-2 dark:border-zinc-800 dark:bg-zinc-900/50;
+}
+.guide-prose summary {
+  @apply cursor-pointer list-none font-medium text-zinc-800 marker:content-none dark:text-zinc-200;
+}
+.guide-prose summary::-webkit-details-marker {
+  display: none;
+}
+.guide-prose details[open] summary {
+  @apply mb-2 border-b border-zinc-200 pb-2 dark:border-zinc-800;
+}
+.guide-prose .guide-figure {
+  @apply my-5;
+}
+.guide-prose .guide-figure img {
+  @apply mx-auto max-h-[460px] w-auto max-w-full rounded-xl border border-zinc-200 dark:border-zinc-800;
+}
+.guide-prose figcaption {
+  @apply mt-2 text-center text-xs text-zinc-500;
+}
+.guide-prose .guide-figure-missing {
+  @apply my-3;
+}
+.guide-prose .guide-figure-ph {
+  @apply flex items-center gap-2.5 rounded-lg border border-dashed border-zinc-300 bg-zinc-50 px-3 py-2 text-sm text-zinc-500 dark:border-zinc-700 dark:bg-zinc-900/60 dark:text-zinc-400;
+}
+.guide-prose .guide-figure-ph svg {
+  @apply size-5 shrink-0 text-zinc-400 dark:text-zinc-500;
+}
+.guide-prose .guide-figure-ph span {
+  @apply min-w-0;
+}

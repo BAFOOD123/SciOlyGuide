@@ -13,6 +13,7 @@ import { Flashcards } from "@/components/rocks/Flashcards";
 import { SpecimenGallery } from "@/components/rocks/SpecimenGallery";
 import { ReferenceTables } from "@/components/rocks/ReferenceTables";
 import { BUILD_BLOCK, DIV_C_EVENTS, eventBySlug } from "@/lib/events";
+import { guideFor } from "@/lib/guides.generated";
 import { buildDeck, buildSessionView, weightedPhotoPool } from "@/lib/rocks-core";
 import { PhotoDrill } from "@/components/rocks/PhotoDrill";
 import { CreditsList } from "@/components/rocks/CreditsList";
@@ -81,6 +82,9 @@ function HubView() {
               {EVENT_DESCRIPTION.source.label}
             </a>
           </blockquote>
+          <a href="#event-codebusters" className="inline-flex text-sm font-medium text-brand-600 hover:underline dark:text-brand-300">
+            Read the full event guide →
+          </a>
           <p className="max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">
             Unlimited generated puzzles for every 2027 cipher, scored by tournament rules ({SCORING.freeErrors} free errors, then −
             {SCORING.penaltyPerError} each).
@@ -443,37 +447,66 @@ function HomeDemo() {
 function EventDemo({ slug }: { slug: string }) {
   const e = eventBySlug(slug);
   if (!e) return <NotFound />;
+  const guide = guideFor(slug);
   const sameBlock = e.block === BUILD_BLOCK ? [] : DIV_C_EVENTS.filter((o) => o.block === e.block && o.slug !== e.slug);
+  const hubHref = e.href === "/codebusters" ? "#codebusters" : e.href === "/rocks-and-minerals" ? "#rocks" : null;
   return (
-    <article className="mx-auto max-w-3xl space-y-6">
-      <nav className="text-sm text-zinc-500">
+    <div className="mx-auto max-w-6xl">
+      <nav className="mb-4 text-sm text-zinc-500">
         <a href="#home" className="hover:underline">Home</a> / <span className="text-zinc-800 dark:text-zinc-200">{e.name}</span>
       </nav>
-      <header className="space-y-2">
+      <header className="mb-6 space-y-2">
         <p className="text-sm font-medium text-brand-600 dark:text-brand-300">{e.category}</p>
         <h1 className="text-3xl font-bold tracking-tight">{e.name}</h1>
-        <blockquote className="text-lg text-zinc-700 dark:text-zinc-300">“{e.description}”</blockquote>
-        <p className="text-xs text-zinc-500">Official short description, soinc.org</p>
+        {guide?.summary && <p className="text-lg text-zinc-700 dark:text-zinc-300">{guide.summary}</p>}
+        <div className="flex flex-wrap gap-2 pt-1">
+          {hubHref && <a className="btn btn-primary" href={hubHref}>Open practice tools →</a>}
+          <a className="btn btn-secondary" href={e.officialUrl} target="_blank" rel="noreferrer">Official rules & resources ↗</a>
+        </div>
       </header>
-      <div className="card space-y-3 p-5">
-        <p className="font-semibold">Study tools for {e.name} are coming soon.</p>
-        <div className="flex flex-wrap gap-2">
-          <a className="btn btn-primary" href={e.officialUrl} target="_blank" rel="noreferrer">Official event page and resources ↗</a>
-          <a className="btn btn-secondary" href="#home">Back to home</a>
+      {guide ? (
+        <div className="gap-8 lg:flex">
+          {guide.toc.length > 1 && (
+            <nav aria-label="Contents" className="mb-6 shrink-0 lg:sticky lg:top-6 lg:mb-0 lg:max-h-[calc(100vh-3rem)] lg:w-56 lg:self-start lg:overflow-auto">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-zinc-500">On this page</p>
+              <ul className="space-y-1 text-sm">
+                {guide.toc.map((t) => (
+                  <li key={t.id}>
+                    <a
+                      href={`#${t.id}`}
+                      onClick={(ev) => {
+                        // Scroll without changing the hash (which drives demo routing).
+                        ev.preventDefault();
+                        document.getElementById(t.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+                      }}
+                      className="block rounded px-2 py-1 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+                    >
+                      {t.text}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
+          <article className="guide-prose min-w-0 flex-1" dangerouslySetInnerHTML={{ __html: guide.html }} />
         </div>
-      </div>
-      <dl className="grid gap-4 text-sm sm:grid-cols-2">
-        <div className="card p-4">
-          <dt className="text-zinc-500">2027 national conflict block</dt>
-          <dd className="text-lg font-semibold">{e.block === BUILD_BLOCK ? "Block 7 (build events)" : `Block ${e.block}`}</dd>
-          {sameBlock.length > 0 && <dd className="mt-1 text-zinc-600 dark:text-zinc-400">Same block as {sameBlock.map((o) => o.name).join(", ")}.</dd>}
+      ) : (
+        <div className="card space-y-3 p-5">
+          <blockquote className="text-zinc-700 dark:text-zinc-300">“{e.description}”</blockquote>
+          <dl className="grid gap-4 pt-2 text-sm sm:grid-cols-2">
+            <div>
+              <dt className="text-zinc-500">2027 national conflict block</dt>
+              <dd className="font-semibold">{e.block === BUILD_BLOCK ? "Block 7 (build events)" : `Block ${e.block}`}</dd>
+              {sameBlock.length > 0 && <dd className="mt-1 text-zinc-600 dark:text-zinc-400">Same block as {sameBlock.map((o) => o.name).join(", ")}.</dd>}
+            </div>
+            <div>
+              <dt className="text-zinc-500">Format</dt>
+              <dd className="font-semibold">{e.build ? "Built before the tournament" : "Competed on site"}</dd>
+            </div>
+          </dl>
         </div>
-        <div className="card p-4">
-          <dt className="text-zinc-500">Format</dt>
-          <dd className="text-lg font-semibold">{e.build ? "Built before the tournament" : "Competed on site"}</dd>
-        </div>
-      </dl>
-    </article>
+      )}
+    </div>
   );
 }
 

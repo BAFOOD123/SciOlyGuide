@@ -66,6 +66,9 @@ export function RmHub({ stats }: { stats: RmStats }) {
             soinc.org
           </a>
         </blockquote>
+        <Link href="/events/rocks-and-minerals" className="inline-flex text-sm font-medium text-brand-600 hover:underline dark:text-brand-300">
+          Read the full event guide →
+        </Link>
         <p className="max-w-3xl text-sm text-zinc-600 dark:text-zinc-400">
           Covers all 92 specimens in the official Ward&apos;s kit list. At the tournament you&apos;ll handle real specimens, so pair this with hands-on
           hardness, streak and acid tests.

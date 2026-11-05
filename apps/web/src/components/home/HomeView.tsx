@@ -91,12 +91,17 @@ export function HomeView({ displayName, chosen: initial, progress }: HomeViewPro
                 </div>
                 <h3 className="text-lg font-semibold">{e.name}</h3>
                 <p className="flex-1 text-sm text-zinc-600 dark:text-zinc-400">
-                  {e.href ? (progress[e.slug] ?? "Start studying.") : "Study tools for this event are in progress. See the official resources for now."}
+                  {e.href ? (progress[e.slug] ?? "Start studying.") : "Read the full event guide, then practice with the official resources."}
                 </p>
                 <div className="flex items-center gap-2">
                   <Link href={eventHref(e)} className={`btn ${e.href ? "btn-primary" : "btn-secondary"} flex-1`}>
-                    {e.href ? "Study" : "Event info"}
+                    {e.href ? "Study" : "Event guide"}
                   </Link>
+                  {e.href && (
+                    <Link href={`/events/${e.slug}`} className="btn btn-ghost px-3" title="Read the event guide">
+                      Guide
+                    </Link>
+                  )}
                   <button type="button" className="btn btn-ghost px-3" onClick={() => toggle(e.slug)} aria-label={`Remove ${e.name}`}>
                     Remove
                   </button>

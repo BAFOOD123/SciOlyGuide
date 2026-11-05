@@ -36,7 +36,8 @@ const cssSrc = readFileSync(resolve(here, "demo.css"), "utf8").replace("/*__GLOB
 const css = (await postcss([tailwind({ base: web, optimize: true })]).process(cssSrc, { from: resolve(here, "demo.css") })).css;
 
 const code = js.outputFiles[0].text.replace(/<\/script/gi, "<\\/script");
-const html = `<title>SciOlyGuide</title>
+const html = `<meta charset="utf-8">
+<title>SciOlyGuide</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Free Division C Science Olympiad study app: choose your events, with Codebusters and Rocks and Minerals live.">
 <style>${css}</style>
