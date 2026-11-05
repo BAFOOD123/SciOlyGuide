@@ -165,3 +165,9 @@ body {
 .guide-prose .guide-figure-ph span {
   @apply min-w-0;
 }
+.guide-prose .guide-credit {
+  @apply text-zinc-400 dark:text-zinc-500;
+}
+.guide-prose .guide-credit a {
+  @apply font-normal text-zinc-400 no-underline hover:underline dark:text-zinc-500;
+}

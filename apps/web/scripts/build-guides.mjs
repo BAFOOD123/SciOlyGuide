@@ -11,6 +11,23 @@ const guidesDir = join(repo, "content", "guides");
 const publicGuides = join(here, "..", "public", "guides");
 const outFile = join(here, "..", "src", "lib", "guides.generated.ts");
 
+// Image attributions (Wikimedia Commons). Keyed by img name.
+let CREDITS = {};
+{
+  const cp = join(guidesDir, "credits.json");
+  if (existsSync(cp)) {
+    try { CREDITS = JSON.parse(readFileSync(cp, "utf8")); } catch { CREDITS = {}; }
+  }
+}
+const LICENSE_LABEL = (l) => {
+  const s = String(l || "").toLowerCase();
+  if (s.startsWith("cc-by-sa")) return "CC BY-SA";
+  if (s.startsWith("cc-by")) return "CC BY";
+  if (s.startsWith("cc-zero") || s === "cc0") return "CC0";
+  if (s.startsWith("pd") || s.includes("public domain")) return "Public domain";
+  return "Wikimedia Commons";
+};
+
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const escAttr = (s) => esc(s).replace(/"/g, "&quot;");
 
@@ -51,7 +68,11 @@ function figure(caption, src) {
     const name = src.slice(4);
     const ext = imageExt(name);
     if (ext) {
-      return `<figure class="guide-figure"><img src="\${GUIDE_IMG}${name}.${ext}" alt="${escAttr(caption)}" loading="lazy" /><figcaption>${inline(caption)}</figcaption></figure>`;
+      const c = CREDITS[name];
+      const credit = c
+        ? ` <span class="guide-credit">· <a href="${escAttr(c.source)}" target="_blank" rel="noreferrer">${escAttr(c.author || "Wikimedia Commons")}, ${LICENSE_LABEL(c.license)}</a></span>`
+        : "";
+      return `<figure class="guide-figure"><img src="\${GUIDE_IMG}${name}.${ext}" alt="${escAttr(caption)}" loading="lazy" /><figcaption>${inline(caption)}${credit}</figcaption></figure>`;
     }
     // No image yet: a compact labelled note so the guide still reads well.
     return `<figure class="guide-figure guide-figure-missing"><div class="guide-figure-ph" role="img" aria-label="Diagram: ${escAttr(caption)}"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><circle cx="8.5" cy="9.5" r="1.8" stroke="currentColor" stroke-width="1.4"/><path d="M4 17l5-5 4 3 3-3 4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>${inline(caption)}</span></div></figure>`;
