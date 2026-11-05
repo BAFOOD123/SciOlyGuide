@@ -1,0 +1,626 @@
+{
+ "ap-antibody": {
+  "name": "ap-antibody",
+  "file": "Diagram showing the structure of an immunoglobulin CRUK 449.svg",
+  "license": "free",
+  "author": "Cancer Research UK uploader",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Diagram_showing_the_structure_of_an_immunoglobulin_CRUK_449.svg"
+ },
+ "ap-digestive": {
+  "name": "ap-digestive",
+  "file": "Digestive system diagram en.svg",
+  "license": "PD-user",
+  "author": "Mariana Ruiz, U",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Digestive_system_diagram_en.svg"
+ },
+ "ap-gut-wall": {
+  "name": "ap-gut-wall",
+  "file": "Layers of the GI Tract EDITED.svg",
+  "license": "cc-by-sa-4.0",
+  "author": "Goran tek-en and edits made by Collectivedogs",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Layers_of_the_GI_Tract_EDITED.svg"
+ },
+ "ap-liver-lobule": {
+  "name": "ap-liver-lobule",
+  "file": "Liver Lobule (NIH BioArt 565).svg",
+  "license": "cc-by-4.0",
+  "author": "BioArt",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Liver_Lobule_(NIH_BioArt_565).svg"
+ },
+ "ap-o2-curve": {
+  "name": "ap-o2-curve",
+  "file": "Hemoglobin saturation curve.svg",
+  "license": "PD-ineligible",
+  "author": "Rehua",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Hemoglobin_saturation_curve.svg"
+ },
+ "ap-respiratory": {
+  "name": "ap-respiratory",
+  "file": "Respiratory system complete en.svg",
+  "license": "pd-user",
+  "author": "U",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Respiratory_system_complete_en.svg"
+ },
+ "astro-hr": {
+  "name": "astro-hr",
+  "file": "Hertzsprung-Russell Diagram 2026.jpg",
+  "license": "free",
+  "author": "Danny William Wilson",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:Hertzsprung-Russell_Diagram_2026.jpg"
+ },
+ "astro-m82": {
+  "name": "astro-m82",
+  "file": "M82 HST ACS 2006-14-a-large web.jpg",
+  "license": "PD-Hubble",
+  "author": "NASA, ESA, and The Hubble Heritage Team (STScI/AURA)",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:M82_HST_ACS_2006-14-a-large_web.jpg"
+ },
+ "astro-rotation-curve": {
+  "name": "astro-rotation-curve",
+  "file": "Rotation Curve UGC11455.svg",
+  "license": "free",
+  "author": "ScienceDawns",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Rotation_Curve_UGC11455.svg"
+ },
+ "astro-tuning-fork": {
+  "name": "astro-tuning-fork",
+  "file": "Hubble sequence empty.svg",
+  "license": "free",
+  "author": "Ikonact & Simon Villeneuve (cutting)",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Hubble_sequence_empty.svg"
+ },
+ "bot-alternation": {
+  "name": "bot-alternation",
+  "file": "Alternation of generations CS.svg",
+  "license": "free",
+  "author": "*Alternation of generations.svg: Original uploader was Peter coxhead",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Alternation_of_generations_CS.svg"
+ },
+ "bot-flower": {
+  "name": "bot-flower",
+  "file": "Diagram of a Flower.svg",
+  "license": "free",
+  "author": "Audreyyhuang",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Diagram_of_a_Flower.svg"
+ },
+ "bot-photosynthesis": {
+  "name": "bot-photosynthesis",
+  "file": "Thylakoid membrane 4.svg",
+  "license": "cc-by-sa-4.0",
+  "author": "Somepics",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Thylakoid_membrane_4.svg"
+ },
+ "bot-phylogeny": {
+  "name": "bot-phylogeny",
+  "file": "Plant phylogenetic tree.png",
+  "license": "cc-by-sa-4.0",
+  "author": "Jaume Pellicer",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Plant_phylogenetic_tree.png"
+ },
+ "bot-plant-cell": {
+  "name": "bot-plant-cell",
+  "file": "Plant cell structure-en.svg",
+  "license": "PD-user",
+  "author": "LadyofHats",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Plant_cell_structure-en.svg"
+ },
+ "bot-stem-xs": {
+  "name": "bot-stem-xs",
+  "file": "Woody dicot stem 100x cross section.jpg",
+  "license": "free",
+  "author": "Tgru001",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:Woody_dicot_stem_100x_cross_section.jpg"
+ },
+ "cad-ortho": {
+  "name": "cad-ortho",
+  "file": "Conventions of placing vues in technical drawings.svg",
+  "license": "free",
+  "author": "GregorDS",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Conventions_of_placing_vues_in_technical_drawings.svg"
+ },
+ "cb-morse": {
+  "name": "cb-morse",
+  "file": "International Morse Code.svg",
+  "license": "PD-1923",
+  "author": "Rhey T. Snodgrass & Victor F. Camp, 1922",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:International_Morse_Code.svg"
+ },
+ "cb-polybius": {
+  "name": "cb-polybius",
+  "file": "Polybius square.png",
+  "license": "pd-text",
+  "author": "Gre regiment",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Polybius_square.png"
+ },
+ "chem-catalyst": {
+  "name": "chem-catalyst",
+  "file": "Catalyst Energy Diagram.png",
+  "license": "free",
+  "author": "Emma Ambrogi",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Catalyst_Energy_Diagram.png"
+ },
+ "chem-greenhouse": {
+  "name": "chem-greenhouse",
+  "file": "Greenhouse effect with energy flows shown by altitude.svg",
+  "license": "free",
+  "author": "Efbrazil",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Greenhouse_effect_with_energy_flows_shown_by_altitude.svg"
+ },
+ "circ-bjt": {
+  "name": "circ-bjt",
+  "file": "Symbol NPN Transistor (collector on case).svg",
+  "license": "PD-shape",
+  "author": "&mdash; MovGP0",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Symbol_NPN_Transistor_(collector_on_case).svg"
+ },
+ "circ-multimeter": {
+  "name": "circ-multimeter",
+  "file": "2017 Cyfrowy miernik uniwersalny.jpg",
+  "license": "free",
+  "author": "Jacek Halicki",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:2017_Cyfrowy_miernik_uniwersalny.jpg"
+ },
+ "circ-opamp": {
+  "name": "circ-opamp",
+  "file": "Operational amplifier integrator.svg",
+  "license": "free",
+  "author": "DMGualtieri",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Operational_amplifier_integrator.svg"
+ },
+ "circ-timing": {
+  "name": "circ-timing",
+  "file": "Flip flop mandal ve flip-flop zaman cizelgesi tr.svg",
+  "license": "free",
+  "author": "O\u011fuz Ergin",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Flip_flop_mandal_ve_flip-flop_zaman_cizelgesi_tr.svg"
+ },
+ "dd-epi-curve": {
+  "name": "dd-epi-curve",
+  "file": "Suomen koronavirusepidemian 1 aalto kev\u00e4t 2020 kasvu ja hiipumisluvut 1.svg",
+  "license": "free",
+  "author": "Merikanto",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Suomen_koronavirusepidemian_1_aalto_kev\u00e4t_2020_kasvu_ja_hiipumisluvut_1.svg"
+ },
+ "dp-aquifer": {
+  "name": "dp-aquifer",
+  "file": "Aquifer multilang.svg",
+  "license": "PD-USGov",
+  "author": "Hans Hillewaert Multilanguage & image simplification:Pduive23",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Aquifer_multilang.svg"
+ },
+ "dp-hjulstrom": {
+  "name": "dp-hjulstrom",
+  "file": "Tresen Hjulstrom.jpg",
+  "license": "free",
+  "author": "Brwynog",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:Tresen_Hjulstrom.jpg"
+ },
+ "dp-karst": {
+  "name": "dp-karst",
+  "file": "Bloc-diag-karst-mod.jpg",
+  "license": "free",
+  "author": "JYB Devot",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:Bloc-diag-karst-mod.jpg"
+ },
+ "dp-ripple-marks": {
+  "name": "dp-ripple-marks",
+  "file": "Ripple Marks (4500337506).jpg",
+  "license": "cc-by-2.0",
+  "author": "[https://www.flickr.com/people/43288043@N04 GlacierNPS]",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:Ripple_Marks_(4500337506).jpg"
+ },
+ "dp-watershed": {
+  "name": "dp-watershed",
+  "file": "Figure of a drainage basin.svg",
+  "license": "free",
+  "author": "SilentSword22",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Figure_of_a_drainage_basin.svg"
+ },
+ "for-chromatography": {
+  "name": "for-chromatography",
+  "file": "Alcohol y hoja, cromatografia.jpg",
+  "license": "free",
+  "author": "Anto gtz",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:Alcohol_y_hoja,_cromatografia.jpg"
+ },
+ "for-resin-codes": {
+  "name": "for-resin-codes",
+  "file": "Resin identification code.svg",
+  "license": "PD-OpenClipart",
+  "author": "Filtre",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Resin_identification_code.svg"
+ },
+ "genes-dna": {
+  "name": "genes-dna",
+  "file": "DNA-structure-and-bases.png",
+  "license": "PD-USGov",
+  "author": "Wikimedia Commons",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:DNA-structure-and-bases.png"
+ },
+ "genes-karyotype": {
+  "name": "genes-karyotype",
+  "file": "Human karyotype (259 33) Karyotype Human 46,XX (woman).jpg",
+  "license": "CC-BY-SA-3.0",
+  "author": "Doc. RNDr. Josef Reischig, CSc.",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:Human_karyotype_(259_33)_Karyotype_Human_46,XX_(woman).jpg"
+ },
+ "genes-meiosis": {
+  "name": "genes-meiosis",
+  "file": "Meiosis Stages.svg",
+  "license": "free",
+  "author": "U",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Meiosis_Stages.svg"
+ },
+ "genes-pcr": {
+  "name": "genes-pcr",
+  "file": "Polymerase chain reaction.svg",
+  "license": "free",
+  "author": "Enzoklop",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Polymerase_chain_reaction.svg"
+ },
+ "genes-pedigree": {
+  "name": "genes-pedigree",
+  "file": "KE-Family pedigree 01-fr.png",
+  "license": "Cc-by-sa-3.0",
+  "author": "Kuebi = Armin K\u00fcbelbeck",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:KE-Family_pedigree_01-fr.png"
+ },
+ "genes-phylogeny": {
+  "name": "genes-phylogeny",
+  "file": "Phylogenetic Tree Circular.svg",
+  "license": "cc-zero",
+  "author": "J_Alves",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Phylogenetic_Tree_Circular.svg"
+ },
+ "genes-replication": {
+  "name": "genes-replication",
+  "file": "DNA replication en.svg",
+  "license": "pd-user",
+  "author": "U",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:DNA_replication_en.svg"
+ },
+ "genes-translation": {
+  "name": "genes-translation",
+  "file": "Ribosome mRNA translation en.svg",
+  "license": "pd-user",
+  "author": "U",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Ribosome_mRNA_translation_en.svg"
+ },
+ "mp-pulley": {
+  "name": "mp-pulley",
+  "file": "Block-and-tackle-in-use.svg",
+  "license": "free",
+  "author": "Themightyquill",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Block-and-tackle-in-use.svg"
+ },
+ "pm-amino-acids": {
+  "name": "pm-amino-acids",
+  "file": "Proteinogenic Amino Acid Table.png",
+  "license": "free",
+  "author": "Thomas.ryckmans68",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Proteinogenic_Amino_Acid_Table.png"
+ },
+ "pm-hemagglutinin": {
+  "name": "pm-hemagglutinin",
+  "file": "1ruz.jpg",
+  "license": "free",
+  "author": "Deposition authors: Skehel, J.J., Gamblin, S.J., Haire, L.F., Russell, R.J., Ste",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:1ruz.jpg"
+ },
+ "pm-levels": {
+  "name": "pm-levels",
+  "file": "Protein structure (3).png",
+  "license": "free",
+  "author": "Thomas Shafee",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Protein_structure_(3).png"
+ },
+ "rm-bowens": {
+  "name": "rm-bowens",
+  "file": "Bowen's Reaction Series.png",
+  "license": "free",
+  "author": "Colivine",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Bowen's_Reaction_Series.png"
+ },
+ "rm-crystal-systems": {
+  "name": "rm-crystal-systems",
+  "file": "Crystal systems.jpg",
+  "license": "free",
+  "author": "Mohanp06",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:Crystal_systems.jpg"
+ },
+ "rm-metamorphic": {
+  "name": "rm-metamorphic",
+  "file": "PhylliteUSGOV.jpg",
+  "license": "PD-USGov",
+  "author": "Wikimedia Commons",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:PhylliteUSGOV.jpg"
+ },
+ "rm-sedimentary": {
+  "name": "rm-sedimentary",
+  "file": "Clasts of siliciclastic sedimentary rock in quartz-pebble conglomerate (Sharon Conglomerate, Lower Pennsylvanian; Jackson North roadcut, Ohio, USA) 9 (23890876518).jpg",
+  "license": "cc-by-2.0",
+  "author": "[https://www.flickr.com/people/47445767@N05 James St. John]",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:Clasts_of_siliciclastic_sedimentary_rock_in_quartz-pebble_conglomerate_(Sharon_Conglomerate,_Lower_Pennsylvanian;_Jackson_North_roadcut,_Ohio,_USA)_9_(23890876518).jpg"
+ },
+ "rm-thin-section": {
+  "name": "rm-thin-section",
+  "file": "Thin section scan crossed polarizers Siilinj\u00e4rvi R636-105.90 edit.jpg",
+  "license": "free",
+  "author": "kallerna",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:Thin_section_scan_crossed_polarizers_Siilinj\u00e4rvi_R636-105.90_edit.jpg"
+ },
+ "rs-energy-balance": {
+  "name": "rs-energy-balance",
+  "file": "NASA Earth radiation thermal balance energy budget atmosphere.jpg",
+  "license": "PD-USGov",
+  "author": "NASA Earth Observatory",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:NASA_Earth_radiation_thermal_balance_energy_budget_atmosphere.jpg"
+ },
+ "rs-enso": {
+  "name": "rs-enso",
+  "file": "El Nino regional impacts.png",
+  "license": "PD-USGov",
+  "author": "NOAA",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:El_Nino_regional_impacts.png"
+ },
+ "thermo-heat-transfer": {
+  "name": "thermo-heat-transfer",
+  "file": "Heat-transmittance-means2.jpg",
+  "license": "cc-by-sa-4.0",
+  "author": "Kmecfiunit, cmglee",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:Heat-transmittance-means2.jpg"
+ },
+ "thermo-phase-diagram": {
+  "name": "thermo-phase-diagram",
+  "file": "Phase diagram of water.svg",
+  "license": "free",
+  "author": "U",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Phase_diagram_of_water.svg"
+ },
+ "wq-hydrometer": {
+  "name": "wq-hydrometer",
+  "file": "2023 Areometr Ballinga.jpg",
+  "license": "free",
+  "author": "Jacek Halicki",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:2023_Areometr_Ballinga.jpg"
+ },
+ "circ-series-parallel": {
+  "name": "circ-series-parallel",
+  "file": "Resistors in Series and Parallel.svg",
+  "license": "PD-self",
+  "author": "Jjbeard",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Resistors_in_Series_and_Parallel.svg"
+ },
+ "circ-breadboard": {
+  "name": "circ-breadboard",
+  "file": "Breadboard.svg",
+  "license": "PD-self",
+  "author": "jjbeard",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Breadboard.svg"
+ },
+ "dp-drainage-patterns": {
+  "name": "dp-drainage-patterns",
+  "file": "Dendritic Drainage pattern.jpg",
+  "license": "PD-user",
+  "author": "user at project",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:Dendritic_Drainage_pattern.jpg"
+ },
+ "dp-meander": {
+  "name": "dp-meander",
+  "file": "Point bar and cut bank.jpg",
+  "license": "PD-USGS",
+  "author": "United States Geological Survey",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:Point_bar_and_cut_bank.jpg"
+ },
+ "dp-rain-shadow": {
+  "name": "dp-rain-shadow",
+  "file": "Rain Shadow Effect caused by Orographic Lift.png",
+  "license": "free",
+  "author": "Thebiologyprimer",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Rain_Shadow_Effect_caused_by_Orographic_Lift.png"
+ },
+ "dp-stratification": {
+  "name": "dp-stratification",
+  "file": "Lake Stratification (11).svg",
+  "license": "free",
+  "author": "Mbrookings19",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Lake_Stratification_(11).svg"
+ },
+ "for-blood-typing": {
+  "name": "for-blood-typing",
+  "file": "Type A blood.png",
+  "license": "PD-user",
+  "author": "Author assumed",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Type_A_blood.png"
+ },
+ "mp-levers": {
+  "name": "mp-levers",
+  "file": "Levers in the Skeletal Muscular System.png",
+  "license": "free",
+  "author": "JohnRoosters",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Levers_in_the_Skeletal_Muscular_System.png"
+ },
+ "pm-influenza": {
+  "name": "pm-influenza",
+  "file": "Viruses-10-00497-g001.png",
+  "license": "cc-by-4.0",
+  "author": "Ahmed Mostafa, Elsayed M. Abdelwhab, Thomas C. Mettenleiter, and Stephan Pleschk",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Viruses-10-00497-g001.png"
+ },
+ "rm-igneous": {
+  "name": "rm-igneous",
+  "file": "TAS_classification_igneous_rocks_-_field_symbols_&_coordinates_NL.svg",
+  "license": "free",
+  "author": "Woudloper",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:TAS_classification_igneous_rocks_-_field_symbols_&_coordinates_NL.svg"
+ },
+ "rm-phase-diagram": {
+  "name": "rm-phase-diagram",
+  "file": "Al2SiO5 phase diagram.svg",
+  "license": "free",
+  "author": "Smith609",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Al2SiO5_phase_diagram.svg"
+ },
+ "rm-rock-cycle": {
+  "name": "rm-rock-cycle",
+  "file": "Rock Cycle Igneous Rock.svg",
+  "license": "free",
+  "author": "Carie Frantz",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Rock_Cycle_Igneous_Rock.svg"
+ },
+ "rm-silicates": {
+  "name": "rm-silicates",
+  "file": "Silicate structures.png",
+  "license": "free",
+  "author": "Actualist",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Silicate_structures.png"
+ },
+ "wq-coral-reef": {
+  "name": "wq-coral-reef",
+  "file": "Soft coral peach komodo.jpg",
+  "license": "free",
+  "author": "Nhobgood Nick Hobgood",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:Soft_coral_peach_komodo.jpg"
+ },
+ "chem-boyle": {
+  "name": "chem-boyle",
+  "file": "Boyle's law and Charles law graph.jpg",
+  "license": "free",
+  "author": "Huzaifa abedeen",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:Boyle's_law_and_Charles_law_graph.jpg"
+ },
+ "rs-em-spectrum": {
+  "name": "rs-em-spectrum",
+  "file": "Chart of Electromagnetic Radiations.jpg",
+  "license": "PD-US",
+  "author": "W.M Welch Scientific Company",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:Chart_of_Electromagnetic_Radiations.jpg"
+ },
+ "dp-water-cycle": {
+  "name": "dp-water-cycle",
+  "file": "Water cycle diagram-vi.svg",
+  "license": "free",
+  "author": "Tttrung",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Water_cycle_diagram-vi.svg"
+ },
+ "bot-leaf-xs": {
+  "name": "bot-leaf-xs",
+  "file": "Cross section of leaf.png",
+  "license": "free",
+  "author": "ELaurent",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Cross_section_of_leaf.png"
+ },
+ "dp-channel-types": {
+  "name": "dp-channel-types",
+  "file": "Meandering river (8029733984).jpg",
+  "license": "cc-by-2.0",
+  "author": "[https://www.flickr.com/people/75182224@N04 National Park Service, Alaska Region",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:Meandering_river_(8029733984).jpg"
+ },
+ "ap-lung-volumes": {
+  "name": "ap-lung-volumes",
+  "file": "Lung Volumes And Capacities en.svg",
+  "license": "free",
+  "author": "'''M\u2022Komorniczak -talk-M.Komorniczak/Licensing",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Lung_Volumes_And_Capacities_en.svg"
+ },
+ "rs-orbits": {
+  "name": "rs-orbits",
+  "file": "Comparison satellite navigation orbits.svg",
+  "license": "free",
+  "author": "U",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Comparison_satellite_navigation_orbits.svg"
+ },
+ "dp-hydrograph": {
+  "name": "dp-hydrograph",
+  "file": "Unit hydrograph.svg",
+  "license": "cc-by-2.5",
+  "author": "Stanislav Hor\u00e1\u010dek (Strepon)",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Unit_hydrograph.svg"
+ },
+ "ev-motor": {
+  "name": "ev-motor",
+  "file": "Micro Metal Gear Motor.jpg",
+  "license": "free",
+  "author": "Will King2013",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:Micro_Metal_Gear_Motor.jpg"
+ }
+}
