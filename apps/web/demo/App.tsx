@@ -14,6 +14,8 @@ import { SpecimenGallery } from "@/components/rocks/SpecimenGallery";
 import { ReferenceTables } from "@/components/rocks/ReferenceTables";
 import { BUILD_BLOCK, DIV_C_EVENTS, eventBySlug } from "@/lib/events";
 import { guideFor } from "@/lib/guides.generated";
+import { anatomyImg, LABEL_SETS, labelSetBySlug } from "@/lib/anatomy";
+import { LabelDrill } from "@/components/anatomy/LabelDrill";
 import { buildDeck, buildSessionView, weightedPhotoPool } from "@/lib/rocks-core";
 import { PhotoDrill } from "@/components/rocks/PhotoDrill";
 import { CreditsList } from "@/components/rocks/CreditsList";
@@ -438,8 +440,8 @@ function HomeDemo() {
   const progress: Record<string, string> = {
     codebusters: cb.totalAttempts ? `${cb.totalSolved} puzzles solved · ${cb.streakDays}-day streak` : "11 cipher types, timed questions and mock tests.",
     "rocks-and-minerals": rm.answered
-      ? `${rm.mastered}/92 specimens mastered · ${Math.round((rm.accuracy ?? 0) * 100)}% correct${rm.dueCards ? ` · ${rm.dueCards} cards due` : ""}`
-      : "92 official specimens: ID drills, station tests and flashcards.",
+      ? `${rm.mastered}/129 specimens mastered · ${Math.round((rm.accuracy ?? 0) * 100)}% correct${rm.dueCards ? ` · ${rm.dueCards} cards due` : ""}`
+      : "129 official specimens: ID drills, station tests and flashcards.",
   };
   return <HomeView displayName="Demo student" chosen={store.get().events} progress={progress} />;
 }
@@ -506,6 +508,44 @@ function EventDemo({ slug }: { slug: string }) {
           </dl>
         </div>
       )}
+    </div>
+  );
+}
+
+function AnatomyDemo() {
+  return (
+    <div className="mx-auto max-w-4xl space-y-8">
+      <header className="space-y-2">
+        <p className="text-sm font-medium text-brand-600 dark:text-brand-300">Life, Personal &amp; Social Science · Division C · 2026–27</p>
+        <h1 className="text-3xl font-bold tracking-tight">Anatomy and Physiology</h1>
+        <p className="max-w-3xl text-zinc-700 dark:text-zinc-300">
+          The 2027 systems are the <strong>respiratory</strong>, <strong>digestive</strong> and <strong>immune</strong> systems. Learn the anatomy by
+          labeling diagrams, then dig into the physiology in the full event guide.
+        </p>
+        <div className="flex flex-wrap gap-2 pt-1">
+          <a href="#event-anatomy-physiology" className="btn btn-secondary">Read the full event guide →</a>
+          <a href="https://www.soinc.org/anatomy-and-physiology-c" target="_blank" rel="noreferrer" className="btn btn-secondary">Official rules &amp; resources ↗</a>
+        </div>
+      </header>
+      <section className="space-y-3">
+        <h2 className="text-xl font-semibold">Label the diagram</h2>
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          A station classic: name each numbered structure. Choose multiple-choice to learn, or “type it” to test yourself.
+        </p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {LABEL_SETS.map((s) => (
+            <a key={s.slug} href={`#anatomy-label-${s.slug}`} className="card group flex items-center gap-4 p-4 hover:border-brand-400">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={anatomyImg(s.image)} alt="" className="size-20 shrink-0 rounded-lg border border-zinc-200 object-contain dark:border-zinc-800" />
+              <span className="min-w-0">
+                <span className="block font-semibold">{s.title}</span>
+                <span className="mt-0.5 block text-sm text-zinc-600 dark:text-zinc-400">{s.markers.length} structures to label</span>
+                <span className="mt-1 inline-block text-sm font-medium text-brand-600 group-hover:underline dark:text-brand-300">Start labeling →</span>
+              </span>
+            </a>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
@@ -581,7 +621,7 @@ function RmSpecimensDemo() {
       <RmCrumb>Specimens</RmCrumb>
       <header className="space-y-1">
         <h1 className="text-3xl font-bold tracking-tight">Specimen gallery</h1>
-        <p className="text-zinc-600 dark:text-zinc-400">The 92 specimens of the official Ward&apos;s kit, numbered as on the kit list. Values are typical; real specimens vary.</p>
+        <p className="text-zinc-600 dark:text-zinc-400">The 129 specimens of the 2027 National list (the first 92 numbered as on the Ward&apos;s kit). Values are typical; real specimens vary.</p>
       </header>
       <SpecimenGallery mastery={mastery} />
     </div>
@@ -624,6 +664,19 @@ function route(view: string) {
     );
   if (view.startsWith("rocks-cards-")) return <RmCardsDemo arg={view.slice(12)} />;
   if (view.startsWith("event-")) return <EventDemo slug={view.slice(6)} />;
+  if (view === "anatomy") return <AnatomyDemo />;
+  if (view.startsWith("anatomy-label-")) {
+    const set = labelSetBySlug(view.slice("anatomy-label-".length));
+    if (!set) return <NotFound />;
+    return (
+      <div className="space-y-4">
+        <nav className="mx-auto max-w-5xl text-sm text-zinc-500">
+          <a href="#anatomy" className="hover:underline">Anatomy and Physiology</a> / <span className="text-zinc-800 dark:text-zinc-200">Label: {set.title}</span>
+        </nav>
+        <LabelDrill key={set.slug} set={set} />
+      </div>
+    );
+  }
   if (view === "timed") return <TimedView />;
   if (view === "tests") return <TestsView />;
   const [section, ...rest] = view.split("-");
@@ -658,6 +711,8 @@ export function App() {
           </a>
           <nav className="flex min-w-0 items-center gap-0.5 overflow-x-auto text-sm" aria-label="Main">
             {navItem("home", "Home", !view || view === "home" || view.startsWith("event-"))}
+            {navEvents.includes("anatomy-physiology") &&
+              navItem("anatomy", "Anatomy", view.startsWith("anatomy"))}
             {navEvents.includes("rocks-and-minerals") &&
               navItem("rocks", "Rocks", view.startsWith("rocks"))}
             {navEvents.includes("codebusters") &&

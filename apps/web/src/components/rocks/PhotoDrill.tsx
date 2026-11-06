@@ -10,7 +10,7 @@ import { QuestionView, hasAnswer } from "./QuestionView";
 const NAMES = SPECIMENS.map((s) => s.name).sort();
 
 export const PHOTO_DECKS: { value: Focus; label: string }[] = [
-  { value: "all", label: "All 92 specimens" },
+  { value: "all", label: "All 129 specimens" },
   { value: "minerals", label: "Minerals" },
   { value: "rocks", label: "All rocks" },
   { value: "igneous", label: "Igneous" },

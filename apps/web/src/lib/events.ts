@@ -35,7 +35,7 @@ export interface DivCEvent {
 const so = (path: string) => `https://www.soinc.org/${path}`;
 
 export const DIV_C_EVENTS: readonly DivCEvent[] = [
-  { slug: "anatomy-physiology", name: "Anatomy and Physiology", category: "Life, Personal & Social Science", block: 1, build: false, officialUrl: so("anatomy-and-physiology-c"), description: "Participants will be assessed on their understanding of the anatomy and physiology for the respiratory, digestive and immune systems of the human body." },
+  { slug: "anatomy-physiology", name: "Anatomy and Physiology", category: "Life, Personal & Social Science", block: 1, build: false, officialUrl: so("anatomy-and-physiology-c"), href: "/anatomy-physiology", description: "Participants will be assessed on their understanding of the anatomy and physiology for the respiratory, digestive and immune systems of the human body." },
   { slug: "botany", name: "Botany", category: "Life, Personal & Social Science", block: 3, build: false, officialUrl: so("botany-c"), description: "Participants will demonstrate their knowledge of plant life and general botany principles." },
   { slug: "designer-genes", name: "Designer Genes", category: "Life, Personal & Social Science", block: 6, build: false, officialUrl: so("designer-genes-c"), description: "Teams will answer questions, solve problems, and analyze data pertaining to classic, evolutionary, and molecular genetics." },
   { slug: "disease-detectives", name: "Disease Detectives", category: "Life, Personal & Social Science", block: 2, build: false, officialUrl: so("disease-detectives-c"), description: "Participants will use their investigative skills in the scientific study of disease, injury, health, and disability in populations or groups of people." },

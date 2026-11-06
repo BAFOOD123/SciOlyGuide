@@ -7,7 +7,7 @@ import { SpecimenCard, TYPE_STYLE, typeLabel, typeOf } from "./SpecimenCard";
 
 type Filter = "all" | "mineral" | "igneous" | "sedimentary" | "metamorphic";
 const FILTERS: { value: Filter; label: string }[] = [
-  { value: "all", label: "All 92" },
+  { value: "all", label: "All 129" },
   { value: "mineral", label: "Minerals" },
   { value: "igneous", label: "Igneous" },
   { value: "sedimentary", label: "Sedimentary" },

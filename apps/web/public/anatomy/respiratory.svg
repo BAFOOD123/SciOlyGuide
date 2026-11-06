@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 480" font-family="sans-serif">
+  <rect width="400" height="480" fill="#f8fafc"/>
+  <!-- Nasal cavity + nose -->
+  <path d="M150 34 q40 -12 70 2 q10 6 6 20 l-72 4 q-8 -16 -4 -26 Z" fill="#fde0d0" stroke="#b45a3c" stroke-width="2"/>
+  <path d="M152 44 h60 M150 52 h66" stroke="#b45a3c" stroke-width="1.5" opacity="0.5"/>
+  <!-- Oral cavity -->
+  <path d="M150 66 q36 10 74 0 q4 10 -6 16 q-30 10 -62 0 q-10 -6 -6 -16 Z" fill="#f7cdbf" stroke="#b45a3c" stroke-width="1.6"/>
+  <!-- Pharynx -->
+  <path d="M196 58 q18 20 10 54" fill="none" stroke="#c0744f" stroke-width="10" stroke-linecap="round"/>
+  <!-- Larynx -->
+  <rect x="188" y="110" width="26" height="30" rx="8" fill="#d98b64" stroke="#a85a38" stroke-width="2"/>
+  <!-- Trachea with cartilage rings -->
+  <rect x="192" y="138" width="18" height="78" rx="9" fill="#e9eef3" stroke="#6b7a88" stroke-width="2"/>
+  <g stroke="#9aa7b3" stroke-width="2"><line x1="194" y1="150" x2="208" y2="150"/><line x1="194" y1="162" x2="208" y2="162"/><line x1="194" y1="174" x2="208" y2="174"/><line x1="194" y1="186" x2="208" y2="186"/><line x1="194" y1="198" x2="208" y2="198"/></g>
+  <!-- Carina / primary bronchi -->
+  <path d="M201 214 q-6 18 -40 34" fill="none" stroke="#8aa0b0" stroke-width="9" stroke-linecap="round"/>
+  <path d="M201 214 q6 18 40 34" fill="none" stroke="#8aa0b0" stroke-width="9" stroke-linecap="round"/>
+  <!-- Secondary bronchi / bronchioles (tree) -->
+  <g fill="none" stroke="#8aa0b0" stroke-linecap="round">
+    <path d="M163 246 q-16 10 -24 28" stroke-width="6"/><path d="M163 246 q-4 18 -2 34" stroke-width="5"/>
+    <path d="M139 274 q-10 8 -14 20" stroke-width="4"/><path d="M139 274 q2 12 -2 22" stroke-width="4"/>
+    <path d="M239 246 q16 10 24 28" stroke-width="6"/><path d="M239 246 q4 18 2 34" stroke-width="5"/>
+    <path d="M263 274 q10 8 14 20" stroke-width="4"/><path d="M263 274 q-2 12 2 22" stroke-width="4"/>
+  </g>
+  <!-- Right lung (viewer's left) : 3 lobes -->
+  <path d="M150 232 q-56 2 -70 70 q-10 54 10 104 q8 22 34 20 q24 -2 30 -26 q10 -78 2 -150 q-1 -16 -6 -18 Z" fill="#f4b8c0" fill-opacity="0.55" stroke="#c45b6c" stroke-width="2.4"/>
+  <path d="M86 300 q40 8 66 -2" fill="none" stroke="#c45b6c" stroke-width="1.6" opacity="0.7"/>
+  <path d="M82 356 q44 8 72 -2" fill="none" stroke="#c45b6c" stroke-width="1.6" opacity="0.7"/>
+  <!-- Left lung (viewer's right) : 2 lobes, cardiac notch -->
+  <path d="M252 232 q56 2 70 70 q10 54 -10 104 q-8 22 -34 20 q-24 -2 -30 -26 q-6 -40 -4 -78 q-6 -4 0 -12 q-4 -30 2 -60 q1 -16 6 -18 Z" fill="#f4b8c0" fill-opacity="0.55" stroke="#c45b6c" stroke-width="2.4"/>
+  <path d="M316 330 q-44 10 -68 -2" fill="none" stroke="#c45b6c" stroke-width="1.6" opacity="0.7"/>
+  <!-- Alveoli cluster (zoom) -->
+  <g transform="translate(300,392)"><circle r="20" fill="#fbd5dc" stroke="#c45b6c" stroke-width="1.6"/><circle cx="-7" cy="-5" r="7" fill="#fff" stroke="#c45b6c" stroke-width="1.2"/><circle cx="8" cy="-4" r="6" fill="#fff" stroke="#c45b6c" stroke-width="1.2"/><circle cx="-2" cy="8" r="7" fill="#fff" stroke="#c45b6c" stroke-width="1.2"/><circle cx="10" cy="8" r="5" fill="#fff" stroke="#c45b6c" stroke-width="1.2"/></g>
+  <line x1="276" y1="300" x2="292" y2="378" stroke="#c45b6c" stroke-width="1" stroke-dasharray="3 3"/>
+  <!-- Diaphragm -->
+  <path d="M70 430 q130 46 262 0" fill="none" stroke="#7b5ea8" stroke-width="6" stroke-linecap="round"/>
+  <path d="M70 430 q130 30 262 0" fill="#c9b8e6" fill-opacity="0.35" stroke="none"/>
+</svg>

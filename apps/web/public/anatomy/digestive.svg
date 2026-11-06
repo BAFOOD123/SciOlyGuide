@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 520" font-family="sans-serif">
+  <rect width="400" height="520" fill="#f8fafc"/>
+  <!-- Mouth / oral cavity -->
+  <path d="M150 26 q46 -14 84 6 q10 8 2 20 q-44 16 -84 2 q-10 -14 -2 -28 Z" fill="#f7cdbf" stroke="#b45a3c" stroke-width="2"/>
+  <ellipse cx="176" cy="40" rx="16" ry="7" fill="#e79a7f" opacity="0.7"/>
+  <!-- Esophagus -->
+  <path d="M196 54 q-6 44 0 92" fill="none" stroke="#d98b64" stroke-width="12" stroke-linecap="round"/>
+  <!-- Liver (large, upper right over stomach) -->
+  <path d="M206 150 q70 -16 112 10 q16 10 8 34 q-10 26 -60 30 q-44 4 -64 -18 q-12 -28 4 -56 Z" fill="#8c4a3f" fill-opacity="0.75" stroke="#5e2f27" stroke-width="2.2"/>
+  <!-- Gallbladder -->
+  <ellipse cx="238" cy="214" rx="13" ry="18" fill="#7bbf6a" stroke="#3f7a35" stroke-width="2"/>
+  <!-- Stomach (J-shaped, upper left) -->
+  <path d="M196 150 q-58 0 -74 44 q-10 34 16 56 q22 16 44 2 q14 -10 8 -26 q-18 2 -30 -8 q-16 -16 -4 -40 q10 -18 40 -14 Z" fill="#e8907f" fill-opacity="0.85" stroke="#a84630" stroke-width="2.2"/>
+  <!-- Pancreas (behind, to the right of stomach) -->
+  <path d="M176 238 q44 10 86 -4 q10 -2 8 6 q-4 10 -20 12 q-40 6 -78 -6 q-6 -6 4 -8 Z" fill="#e8c06a" fill-opacity="0.9" stroke="#9c7a24" stroke-width="2"/>
+  <!-- Large intestine frame (ascending right, transverse, descending left, sigmoid) -->
+  <path d="M292 276 q22 2 22 40 l0 70 q0 16 -16 18 M298 300 q-116 -6 -210 2 q-16 2 -16 20 l0 60 q0 18 18 20"
+        fill="none" stroke="#d98b8b" stroke-width="20" stroke-linecap="round"/>
+  <!-- Cecum / appendix -->
+  <circle cx="300" cy="392" r="12" fill="#e9b0b0" stroke="#b05a5a" stroke-width="2"/>
+  <path d="M300 404 q-6 14 4 24" fill="none" stroke="#b05a5a" stroke-width="4" stroke-linecap="round"/>
+  <!-- Small intestine (coiled mass in the center) -->
+  <path d="M150 320 q60 -8 70 24 q6 28 -40 26 q-44 -2 -34 26 q10 24 60 16 q50 -8 44 20 q-6 24 -56 18 q-44 -4 -30 22"
+        fill="none" stroke="#efa98f" stroke-width="13" stroke-linecap="round"/>
+  <!-- Rectum -->
+  <path d="M190 452 q4 26 2 44" fill="none" stroke="#c8706b" stroke-width="14" stroke-linecap="round"/>
+  <!-- Anus -->
+  <circle cx="192" cy="500" r="6" fill="#9c4a45"/>
+</svg>

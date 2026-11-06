@@ -20,13 +20,15 @@ import {
 const SEEDS = Array.from({ length: 25 }, (_, i) => (i + 7) * 2246822519);
 
 describe("specimen data", () => {
-  it("matches the official 92-specimen kit list", () => {
-    expect(MINERALS).toHaveLength(52);
-    expect(ROCKS).toHaveLength(40);
-    expect(SPECIMENS.map((s) => s.n)).toEqual(Array.from({ length: 92 }, (_, i) => i + 1));
-    expect(new Set(SPECIMENS.map((s) => s.id)).size).toBe(92);
-    expect(ROCKS.filter((r) => r.rockType === "metamorphic").map((r) => r.n)).toEqual([53, 54, 55, 56, 57, 58, 59, 60, 61, 62]);
-    expect(ROCKS.filter((r) => r.rockType === "igneous").map((r) => r.n)).toEqual([63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74]);
+  it("covers the full 2027 National list with unique ids and n", () => {
+    expect(MINERALS).toHaveLength(85);
+    expect(ROCKS).toHaveLength(44);
+    expect(SPECIMENS).toHaveLength(129);
+    // The first 92 (Ward's kit) keep their packing-list numbers 1..92.
+    expect(SPECIMENS.slice(0, 52).map((s) => s.n)).toEqual(Array.from({ length: 52 }, (_, i) => i + 1));
+    // Every specimen has a unique id and a unique n.
+    expect(new Set(SPECIMENS.map((s) => s.id)).size).toBe(129);
+    expect(new Set(SPECIMENS.map((s) => s.n)).size).toBe(129);
   });
 
   it("has sane mineral properties", () => {

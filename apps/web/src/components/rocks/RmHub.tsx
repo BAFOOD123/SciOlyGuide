@@ -70,13 +70,13 @@ export function RmHub({ stats }: { stats: RmStats }) {
           Read the full event guide →
         </Link>
         <p className="max-w-3xl text-sm text-zinc-600 dark:text-zinc-400">
-          Covers all 92 specimens in the official Ward&apos;s kit list. At the tournament you&apos;ll handle real specimens, so pair this with hands-on
+          Covers all 129 specimens of the 2027 National Rocks & Minerals List. At the tournament you&apos;ll handle real specimens, so pair this with hands-on
           hardness, streak and acid tests.
         </p>
       </header>
 
       <section className="grid grid-cols-2 gap-3 md:grid-cols-4" aria-label="Your progress">
-        <Stat label="Mastered" value={`${stats.mastered}/92`} hint="≥ 80% on 3+ recent answers" />
+        <Stat label="Mastered" value={`${stats.mastered}/129`} hint="≥ 80% on 3+ recent answers" />
         <Stat label="Answered" value={String(stats.answered)} />
         <Stat label="Accuracy" value={stats.accuracy === null ? "—" : `${Math.round(stats.accuracy * 100)}%`} />
         <Stat label="Cards due" value={String(stats.dueCards)} hint={`${stats.newCards} not started`} />
@@ -92,7 +92,7 @@ export function RmHub({ stats }: { stats: RmStats }) {
         <div className="flex flex-col gap-3 p-5">
           <h2 className="text-xl font-bold">Photo ID</h2>
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            Name real specimens from photos: {PHOTO_COUNT} Wikimedia Commons photos covering all 92 specimens. Type the name or pick from look-alikes,
+            Name real specimens from photos: {PHOTO_COUNT} Wikimedia Commons photos covering the specimen list. Type the name or pick from look-alikes,
             use hints when stuck, and answer a follow-up about each specimen. Your mix-ups are tracked below.
           </p>
           <div className="flex flex-wrap items-end gap-3">
@@ -101,7 +101,7 @@ export function RmHub({ stats }: { stats: RmStats }) {
               <select id="photo-deck" className="input w-48" value={photoDeck} onChange={(e) => setPhotoDeck(e.target.value as Focus)}>
                 {FOCUS.map((f) => (
                   <option key={f.value} value={f.value}>
-                    {f.value === "all" ? "All 92 specimens" : f.label}
+                    {f.value === "all" ? "All 129 specimens" : f.label}
                   </option>
                 ))}
               </select>
@@ -204,7 +204,7 @@ export function RmHub({ stats }: { stats: RmStats }) {
             <select id="rm-deck" className="input" value={deck} onChange={(e) => setDeck(e.target.value as Focus)}>
               {FOCUS.map((f) => (
                 <option key={f.value} value={f.value}>
-                  {f.value === "all" ? "All 92 specimens" : f.label}
+                  {f.value === "all" ? "All 129 specimens" : f.label}
                 </option>
               ))}
             </select>
@@ -230,7 +230,7 @@ export function RmHub({ stats }: { stats: RmStats }) {
         <Link href="/rocks-and-minerals/specimens" className="card block p-5 hover:border-brand-400">
           <h2 className="font-semibold">Specimen gallery →</h2>
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            All 92 specimens with hardness, streak, luster, cleavage, formation and uses. Search and filter by type, and see what you&apos;ve mastered.
+            All 129 specimens with hardness, streak, luster, cleavage, formation and uses. Search and filter by type, and see what you&apos;ve mastered.
           </p>
         </Link>
         <Link href="/rocks-and-minerals/reference" className="card block p-5 hover:border-brand-400">

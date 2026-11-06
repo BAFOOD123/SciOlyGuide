@@ -6,6 +6,11 @@ export function toView(href: string): string {
   const [path = "", qs = ""] = pathQ.split("?");
   if (path === "/" || path === "/dashboard") return "home";
   if (path.startsWith("/events/")) return `event-${path.slice(8)}`;
+  if (path.startsWith("/anatomy-physiology")) {
+    const rest = path.slice("/anatomy-physiology".length).split("/").filter(Boolean);
+    if (rest[0] === "label" && rest[1]) return `anatomy-label-${rest[1]}`;
+    return "anatomy";
+  }
   if (path.startsWith("/rocks-and-minerals")) {
     const [, section, arg] = path.slice("/rocks-and-minerals".length).split("/");
     if (!section) return "rocks";

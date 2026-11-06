@@ -622,5 +622,45 @@
   "author": "Will King2013",
   "ext": "jpg",
   "source": "https://commons.wikimedia.org/wiki/File:Micro_Metal_Gear_Motor.jpg"
+ },
+ "for-mass-spec": {
+  "name": "for-mass-spec",
+  "file": "Mass Spectrum of Incensole.png",
+  "license": "cc-by-sa-4.0",
+  "author": "Baeten et al.",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Mass_Spectrum_of_Incensole.png"
+ },
+ "for-fingerprints": {
+  "name": "for-fingerprints",
+  "file": "Fingerprint Types and Patterns.png",
+  "license": "free",
+  "author": "Tholarbod",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Fingerprint_Types_and_Patterns.png"
+ },
+ "hover-lift": {
+  "name": "hover-lift",
+  "file": "Hovercraft - scheme.svg",
+  "license": "free",
+  "author": "MesserWoland",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Hovercraft_-_scheme.svg"
+ },
+ "ppp-parachute": {
+  "name": "ppp-parachute",
+  "file": "Parachute Landing at Sunset Over Open Field.jpg",
+  "license": "free",
+  "author": "Rstpch",
+  "ext": "jpg",
+  "source": "https://commons.wikimedia.org/wiki/File:Parachute_Landing_at_Sunset_Over_Open_Field.jpg"
+ },
+ "circ-logic-gates": {
+  "name": "circ-logic-gates",
+  "file": "Logic-gate-index.png",
+  "license": "free",
+  "author": "Wikimedia Commons",
+  "ext": "png",
+  "source": "https://commons.wikimedia.org/wiki/File:Logic-gate-index.png"
  }
 }
