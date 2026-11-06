@@ -9,6 +9,8 @@ export function toView(href: string): string {
   if (path.startsWith("/anatomy-physiology")) {
     const rest = path.slice("/anatomy-physiology".length).split("/").filter(Boolean);
     if (rest[0] === "label" && rest[1]) return `anatomy-label-${rest[1]}`;
+    if (rest[0] === "practice") return "anatomy-practice";
+    if (rest[0] === "test") return "anatomy-test";
     return "anatomy";
   }
   if (path.startsWith("/rocks-and-minerals")) {

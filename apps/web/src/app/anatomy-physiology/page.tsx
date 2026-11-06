@@ -2,19 +2,21 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { requireUser } from "@/lib/auth";
 import { anatomyImg, LABEL_SETS } from "@/lib/anatomy";
+import { ANATOMY_QUESTIONS, ANATOMY_TOPICS, SYSTEMS, topicsBySystem } from "@/lib/anatomy-questions";
 
 export const metadata: Metadata = { title: "Anatomy and Physiology" };
 
 export default async function AnatomyHub() {
   await requireUser();
+  const totalQ = ANATOMY_QUESTIONS.length;
   return (
     <div className="mx-auto max-w-4xl space-y-8">
       <header className="space-y-2">
         <p className="text-sm font-medium text-brand-600 dark:text-brand-300">Life, Personal &amp; Social Science · Division C · 2026–27</p>
         <h1 className="text-3xl font-bold tracking-tight">Anatomy and Physiology</h1>
         <p className="max-w-3xl text-zinc-700 dark:text-zinc-300">
-          The 2027 systems are the <strong>respiratory</strong>, <strong>digestive</strong> and <strong>immune</strong> systems. Learn the anatomy by
-          labeling diagrams, then dig into the physiology and diseases in the full event guide.
+          The 2027 systems are the <strong>respiratory</strong>, <strong>digestive</strong> and <strong>immune</strong> systems. Drill {totalQ} questions by
+          topic, take a timed test, or label the diagrams — then dig into the physiology and diseases in the full event guide.
         </p>
         <div className="flex flex-wrap gap-2 pt-1">
           <Link href="/events/anatomy-physiology" className="btn btn-secondary">
@@ -26,6 +28,42 @@ export default async function AnatomyHub() {
         </div>
       </header>
 
+      {/* Study tools */}
+      <section className="grid gap-4 sm:grid-cols-2">
+        <Link href="/anatomy-physiology/practice" className="card group flex flex-col gap-2 p-5 hover:border-brand-400">
+          <span className="text-lg font-semibold">Practice by topic →</span>
+          <span className="text-sm text-zinc-600 dark:text-zinc-400">
+            Pick any mix of topics and answer at your own pace. Every question shows the answer and an explanation.
+          </span>
+          <span className="mt-auto pt-2 text-xs font-medium text-brand-600 dark:text-brand-300">{ANATOMY_TOPICS.length} topics · {totalQ} questions</span>
+        </Link>
+        <Link href="/anatomy-physiology/test" className="card group flex flex-col gap-2 p-5 hover:border-brand-400">
+          <span className="text-lg font-semibold">Timed test →</span>
+          <span className="text-sm text-zinc-600 dark:text-zinc-400">
+            A mixed, timed round like a tournament. Answer against the clock, then get a full graded review.
+          </span>
+          <span className="mt-auto pt-2 text-xs font-medium text-brand-600 dark:text-brand-300">20–40 questions · ~45 s each</span>
+        </Link>
+      </section>
+
+      {/* Topic overview */}
+      <section className="space-y-3">
+        <h2 className="text-xl font-semibold">What you can drill</h2>
+        <div className="grid gap-4 sm:grid-cols-3">
+          {SYSTEMS.map((system) => (
+            <div key={system} className="card p-4">
+              <h3 className="mb-2 font-semibold">{system}</h3>
+              <ul className="space-y-1 text-sm text-zinc-600 dark:text-zinc-400">
+                {topicsBySystem(system).map((t) => (
+                  <li key={t.slug}>{t.label}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Label the diagram */}
       <section className="space-y-3">
         <h2 className="text-xl font-semibold">Label the diagram</h2>
         <p className="text-sm text-zinc-600 dark:text-zinc-400">
@@ -44,14 +82,6 @@ export default async function AnatomyHub() {
             </Link>
           ))}
         </div>
-      </section>
-
-      <section className="card space-y-2 p-5">
-        <h2 className="font-semibold">More coming</h2>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
-          The event guide already covers respiratory, digestive and immune physiology, diseases by level, and how tests are built. Immune-system and
-          histology labeling diagrams are on the way.
-        </p>
       </section>
     </div>
   );
