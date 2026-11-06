@@ -62,9 +62,21 @@ interface State {
   /** Newest first. */
   rmAnswers: { specimenId: string | null; skill: string; correct: boolean; guess?: string | null; at: number }[];
   cards: Record<string, { box: number; dueAt: number }>;
+  /** Anatomy & Physiology: finished quizzes and answered questions (newest first). */
+  anatomyRuns: { mode: "practice" | "test"; total: number; score: number; finishedAt: number }[];
+  anatomyAnswers: { topic: string; correct: boolean; at: number }[];
 }
 
-const EMPTY = (): State => ({ attempts: {}, tests: {}, events: [], rmSessions: {}, rmAnswers: [], cards: {} });
+const EMPTY = (): State => ({
+  attempts: {},
+  tests: {},
+  events: [],
+  rmSessions: {},
+  rmAnswers: [],
+  cards: {},
+  anatomyRuns: [],
+  anatomyAnswers: [],
+});
 
 const KEY = "sog-demo-v1";
 let state: State = EMPTY();

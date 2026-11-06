@@ -359,6 +359,128 @@ export interface QuizItem {
   explanation: string;
 }
 
+/* ------------------------------- Progress stats ------------------------------ */
+
+export type QuizMode = "practice" | "test";
+
+/** One finished quiz run (for the dashboard). */
+export interface AnatomyRunRow {
+  mode: QuizMode;
+  total: number;
+  score: number;
+  finishedAt: number;
+}
+
+/** One answered question (for per-topic / per-system accuracy). */
+export interface AnatomyAnswerRow {
+  topic: string;
+  correct: boolean;
+  at: number;
+}
+
+export interface SystemStat {
+  system: System;
+  answered: number;
+  correct: number;
+}
+
+export interface TopicStat {
+  topic: string;
+  label: string;
+  system: System;
+  answered: number;
+  correct: number;
+}
+
+export interface AnatomyStats {
+  runs: number;
+  testsTaken: number;
+  answered: number;
+  correct: number;
+  /** 0–1 over all answered questions. */
+  accuracy: number;
+  /** Best timed-test percentage (0–100), or null if no test finished. */
+  bestTestPct: number | null;
+  /** Consecutive days with at least one answer, ending today or yesterday. */
+  streakDays: number;
+  bySystem: SystemStat[];
+  /** Topics the student is weakest on (≥3 answered, under 80%). */
+  weakestTopics: TopicStat[];
+  /** Most recent runs, newest first. */
+  recent: AnatomyRunRow[];
+}
+
+function dayNumber(ms: number): number {
+  const d = new Date(ms);
+  d.setHours(0, 0, 0, 0);
+  return Math.floor(d.getTime() / 86_400_000);
+}
+
+export function computeAnatomyStats(runs: AnatomyRunRow[], answers: AnatomyAnswerRow[], now = Date.now()): AnatomyStats {
+  const correct = answers.filter((a) => a.correct).length;
+  const answered = answers.length;
+
+  const bySystemMap = new Map<System, SystemStat>(SYSTEMS.map((s) => [s, { system: s, answered: 0, correct: 0 }]));
+  const byTopic = new Map<string, TopicStat>();
+  for (const a of answers) {
+    const system = systemOfTopic(a.topic);
+    if (system) {
+      const ss = bySystemMap.get(system)!;
+      ss.answered++;
+      if (a.correct) ss.correct++;
+    }
+    const ts =
+      byTopic.get(a.topic) ??
+      byTopic.set(a.topic, { topic: a.topic, label: topicLabel(a.topic), system: system ?? "Respiratory", answered: 0, correct: 0 }).get(a.topic)!;
+    ts.answered++;
+    if (a.correct) ts.correct++;
+  }
+
+  const weakestTopics = [...byTopic.values()]
+    .filter((t) => t.answered >= 3 && t.correct / t.answered < 0.8)
+    .sort((a, b) => a.correct / a.answered - b.correct / b.answered)
+    .slice(0, 5);
+
+  const tests = runs.filter((r) => r.mode === "test" && r.total > 0);
+  const bestTestPct = tests.length ? Math.max(...tests.map((r) => Math.round((r.score / r.total) * 100))) : null;
+
+  // Day streak from the days that have at least one answer.
+  const days = [...new Set(answers.map((a) => dayNumber(a.at)))].sort((a, b) => b - a);
+  let streakDays = 0;
+  if (days.length) {
+    const today = dayNumber(now);
+    if (days[0] === today || days[0] === today - 1) {
+      streakDays = 1;
+      for (let i = 1; i < days.length; i++) {
+        if (days[i] === days[i - 1]! - 1) streakDays++;
+        else break;
+      }
+    }
+  }
+
+  return {
+    runs: runs.length,
+    testsTaken: tests.length,
+    answered,
+    correct,
+    accuracy: answered ? correct / answered : 0,
+    bestTestPct,
+    streakDays,
+    bySystem: [...bySystemMap.values()],
+    weakestTopics,
+    recent: runs.slice().sort((a, b) => b.finishedAt - a.finishedAt).slice(0, 6),
+  };
+}
+
+/** One-line summary for the home dashboard, or "" when there's nothing yet. */
+export function anatomyProgressLine(stats: AnatomyStats): string {
+  if (!stats.answered) return "";
+  const parts = [`${stats.answered} questions · ${Math.round(stats.accuracy * 100)}% correct`];
+  if (stats.bestTestPct != null) parts.push(`best test ${stats.bestTestPct}%`);
+  if (stats.streakDays > 1) parts.push(`${stats.streakDays}-day streak`);
+  return parts.join(" · ");
+}
+
 /**
  * Build a quiz of up to `count` questions from the chosen topics (empty = all),
  * reproducibly from `seed`. Choices are shuffled per question.

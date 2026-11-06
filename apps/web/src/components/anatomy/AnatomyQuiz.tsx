@@ -11,6 +11,7 @@ import {
   type QuizItem,
   type System,
 } from "@/lib/anatomy-questions";
+import { saveAnatomyRun } from "@/app/anatomy-physiology/actions";
 
 type Mode = "practice" | "test";
 type Stage = "setup" | "run" | "done";
@@ -67,6 +68,9 @@ export function AnatomyQuiz({ initialMode = "practice" }: { initialMode?: Mode }
   const finish = (finalPicks: (number | null)[]) => {
     setPicks(finalPicks);
     setStage("done");
+    // Save the finished run to the account (fire-and-forget; scoring still shows locally).
+    const items = quiz.map((it, idx) => ({ topic: it.topic, answered: finalPicks[idx] != null, correct: finalPicks[idx] === it.answer }));
+    void saveAnatomyRun({ mode, items }).catch(() => {});
   };
 
   if (stage === "run")

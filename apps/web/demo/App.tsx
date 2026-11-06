@@ -15,9 +15,11 @@ import { ReferenceTables } from "@/components/rocks/ReferenceTables";
 import { BUILD_BLOCK, DIV_C_EVENTS, eventBySlug } from "@/lib/events";
 import { guideFor } from "@/lib/guides.generated";
 import { anatomyImg, LABEL_SETS, labelSetBySlug } from "@/lib/anatomy";
-import { ANATOMY_QUESTIONS, ANATOMY_TOPICS } from "@/lib/anatomy-questions";
+import { ANATOMY_QUESTIONS, ANATOMY_TOPICS, anatomyProgressLine } from "@/lib/anatomy-questions";
 import { LabelDrill } from "@/components/anatomy/LabelDrill";
 import { AnatomyQuiz } from "@/components/anatomy/AnatomyQuiz";
+import { AnatomyProgress } from "@/components/anatomy/AnatomyProgress";
+import { demoAnatomyStats } from "./anatomy-actions";
 import { buildDeck, buildSessionView, weightedPhotoPool } from "@/lib/rocks-core";
 import { PhotoDrill } from "@/components/rocks/PhotoDrill";
 import { CreditsList } from "@/components/rocks/CreditsList";
@@ -439,11 +441,15 @@ function NotFound() {
 function HomeDemo() {
   const cb = computeStats(store.attempts());
   const rm = demoRmStats();
+  const ap = demoAnatomyStats();
   const progress: Record<string, string> = {
     codebusters: cb.totalAttempts ? `${cb.totalSolved} puzzles solved · ${cb.streakDays}-day streak` : "11 cipher types, timed questions and mock tests.",
     "rocks-and-minerals": rm.answered
       ? `${rm.mastered}/129 specimens mastered · ${Math.round((rm.accuracy ?? 0) * 100)}% correct${rm.dueCards ? ` · ${rm.dueCards} cards due` : ""}`
       : "129 official specimens: ID drills, station tests and flashcards.",
+    "anatomy-physiology": ap.answered
+      ? anatomyProgressLine(ap)
+      : "Respiratory, digestive and immune: topic practice, timed tests and labeling.",
   };
   return <HomeView displayName="Demo student" chosen={store.get().events} progress={progress} />;
 }
@@ -546,6 +552,8 @@ function AnatomyDemo() {
           <span className="mt-auto pt-2 text-xs font-medium text-brand-600 dark:text-brand-300">20–40 questions · ~45 s each</span>
         </a>
       </section>
+
+      <AnatomyProgress stats={demoAnatomyStats()} />
 
       <section className="space-y-3">
         <h2 className="text-xl font-semibold">Label the diagram</h2>

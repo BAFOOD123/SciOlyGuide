@@ -3,11 +3,14 @@ import Link from "next/link";
 import { requireUser } from "@/lib/auth";
 import { anatomyImg, LABEL_SETS } from "@/lib/anatomy";
 import { ANATOMY_QUESTIONS, ANATOMY_TOPICS } from "@/lib/anatomy-questions";
+import { getAnatomyStats } from "@/lib/anatomy-progress";
+import { AnatomyProgress } from "@/components/anatomy/AnatomyProgress";
 
 export const metadata: Metadata = { title: "Anatomy and Physiology" };
 
 export default async function AnatomyHub() {
-  await requireUser();
+  const user = await requireUser();
+  const stats = await getAnatomyStats(user.id);
   const totalQ = ANATOMY_QUESTIONS.length;
   return (
     <div className="mx-auto max-w-4xl space-y-8">
@@ -45,6 +48,8 @@ export default async function AnatomyHub() {
           <span className="mt-auto pt-2 text-xs font-medium text-brand-600 dark:text-brand-300">20–40 questions · ~45 s each</span>
         </Link>
       </section>
+
+      <AnatomyProgress stats={stats} />
 
       {/* Label the diagram */}
       <section className="space-y-3">

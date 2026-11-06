@@ -159,7 +159,42 @@ export const flashcards = sqliteTable(
   (t) => [primaryKey({ columns: [t.userId, t.cardId] })],
 );
 
+/** A finished Anatomy & Physiology quiz: a practice set or a timed test. */
+export const anatomyRuns = sqliteTable(
+  "anatomy_runs",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    mode: text("mode", { enum: ["practice", "test"] }).notNull(),
+    /** JSON: string[] — the topic slugs the run drew from. */
+    topics: text("topics").notNull(),
+    total: integer("total").notNull(),
+    score: integer("score").notNull(),
+    finishedAt: integer("finished_at", { mode: "timestamp_ms" }).notNull(),
+  },
+  (t) => [index("anatomy_runs_user_idx").on(t.userId, t.finishedAt)],
+);
+
+/** One answered Anatomy question, for per-topic and per-system accuracy. */
+export const anatomyAnswers = sqliteTable(
+  "anatomy_answers",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    runId: text("run_id").references(() => anatomyRuns.id, { onDelete: "cascade" }),
+    topic: text("topic").notNull(),
+    correct: integer("correct", { mode: "boolean" }).notNull(),
+    answeredAt: integer("answered_at", { mode: "timestamp_ms" }).notNull(),
+  },
+  (t) => [index("anatomy_answers_user_idx").on(t.userId, t.answeredAt)],
+);
+
 export type User = typeof users.$inferSelect;
 export type Attempt = typeof attempts.$inferSelect;
 export type TestRow = typeof tests.$inferSelect;
 export type QuizSession = typeof quizSessions.$inferSelect;
+export type AnatomyRun = typeof anatomyRuns.$inferSelect;

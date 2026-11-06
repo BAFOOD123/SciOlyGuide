@@ -25,6 +25,7 @@ const js = await build({
     "@/app/codebusters/actions": resolve(here, "actions.ts"),
     "@/app/home-actions": resolve(here, "home-actions.ts"),
     "@/app/rocks-and-minerals/actions": resolve(here, "rocks-actions.ts"),
+    "@/app/anatomy-physiology/actions": resolve(here, "anatomy-actions.ts"),
     "next/link": resolve(here, "Link.tsx"),
     "@": resolve(web, "src"),
   },
