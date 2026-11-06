@@ -15,7 +15,7 @@ import { ReferenceTables } from "@/components/rocks/ReferenceTables";
 import { BUILD_BLOCK, DIV_C_EVENTS, eventBySlug } from "@/lib/events";
 import { guideFor } from "@/lib/guides.generated";
 import { anatomyImg, LABEL_SETS, labelSetBySlug } from "@/lib/anatomy";
-import { ANATOMY_QUESTIONS, ANATOMY_TOPICS, SYSTEMS, topicsBySystem } from "@/lib/anatomy-questions";
+import { ANATOMY_QUESTIONS, ANATOMY_TOPICS } from "@/lib/anatomy-questions";
 import { LabelDrill } from "@/components/anatomy/LabelDrill";
 import { AnatomyQuiz } from "@/components/anatomy/AnatomyQuiz";
 import { buildDeck, buildSessionView, weightedPhotoPool } from "@/lib/rocks-core";
@@ -545,22 +545,6 @@ function AnatomyDemo() {
           </span>
           <span className="mt-auto pt-2 text-xs font-medium text-brand-600 dark:text-brand-300">20–40 questions · ~45 s each</span>
         </a>
-      </section>
-
-      <section className="space-y-3">
-        <h2 className="text-xl font-semibold">What you can drill</h2>
-        <div className="grid gap-4 sm:grid-cols-3">
-          {SYSTEMS.map((system) => (
-            <div key={system} className="card p-4">
-              <h3 className="mb-2 font-semibold">{system}</h3>
-              <ul className="space-y-1 text-sm text-zinc-600 dark:text-zinc-400">
-                {topicsBySystem(system).map((t) => (
-                  <li key={t.slug}>{t.label}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
       </section>
 
       <section className="space-y-3">

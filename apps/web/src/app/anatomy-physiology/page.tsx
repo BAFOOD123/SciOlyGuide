@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { requireUser } from "@/lib/auth";
 import { anatomyImg, LABEL_SETS } from "@/lib/anatomy";
-import { ANATOMY_QUESTIONS, ANATOMY_TOPICS, SYSTEMS, topicsBySystem } from "@/lib/anatomy-questions";
+import { ANATOMY_QUESTIONS, ANATOMY_TOPICS } from "@/lib/anatomy-questions";
 
 export const metadata: Metadata = { title: "Anatomy and Physiology" };
 
@@ -44,23 +44,6 @@ export default async function AnatomyHub() {
           </span>
           <span className="mt-auto pt-2 text-xs font-medium text-brand-600 dark:text-brand-300">20–40 questions · ~45 s each</span>
         </Link>
-      </section>
-
-      {/* Topic overview */}
-      <section className="space-y-3">
-        <h2 className="text-xl font-semibold">What you can drill</h2>
-        <div className="grid gap-4 sm:grid-cols-3">
-          {SYSTEMS.map((system) => (
-            <div key={system} className="card p-4">
-              <h3 className="mb-2 font-semibold">{system}</h3>
-              <ul className="space-y-1 text-sm text-zinc-600 dark:text-zinc-400">
-                {topicsBySystem(system).map((t) => (
-                  <li key={t.slug}>{t.label}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
       </section>
 
       {/* Label the diagram */}

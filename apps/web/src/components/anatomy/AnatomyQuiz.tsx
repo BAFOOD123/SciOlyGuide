@@ -32,6 +32,7 @@ export function AnatomyQuiz({ initialMode = "practice" }: { initialMode?: Mode }
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [count, setCount] = useState(mode === "test" ? 25 : 10);
   const [quiz, setQuiz] = useState<QuizItem[]>([]);
+  const [picks, setPicks] = useState<(number | null)[]>([]);
 
   const available = useMemo(() => countForTopics([...selected]), [selected]);
 
@@ -63,14 +64,19 @@ export function AnatomyQuiz({ initialMode = "practice" }: { initialMode?: Mode }
       />
     );
 
+  const finish = (finalPicks: (number | null)[]) => {
+    setPicks(finalPicks);
+    setStage("done");
+  };
+
   if (stage === "run")
     return mode === "practice" ? (
-      <PracticeRun quiz={quiz} onDone={() => setStage("done")} onExit={() => setStage("setup")} />
+      <PracticeRun quiz={quiz} onDone={finish} onExit={() => setStage("setup")} />
     ) : (
-      <TestRun quiz={quiz} onDone={() => setStage("done")} onExit={() => setStage("setup")} />
+      <TestRun quiz={quiz} onDone={finish} onExit={() => setStage("setup")} />
     );
 
-  return <Review mode={mode} quiz={quiz} onAgain={() => setStage("setup")} />;
+  return <Review mode={mode} quiz={quiz} picks={picks} onAgain={() => setStage("setup")} />;
 }
 
 /* ----------------------------------- Setup ---------------------------------- */
@@ -220,7 +226,7 @@ function Setup({
 
 /* --------------------------------- Practice --------------------------------- */
 
-function PracticeRun({ quiz, onDone, onExit }: { quiz: QuizItem[]; onDone: () => void; onExit: () => void }) {
+function PracticeRun({ quiz, onDone, onExit }: { quiz: QuizItem[]; onDone: (picks: (number | null)[]) => void; onExit: () => void }) {
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<(number | null)[]>(() => quiz.map(() => null));
   const [checked, setChecked] = useState<boolean[]>(() => quiz.map(() => false));
@@ -315,7 +321,7 @@ function PracticeRun({ quiz, onDone, onExit }: { quiz: QuizItem[]; onDone: () =>
               Check
             </button>
           ) : last ? (
-            <button className="btn btn-primary" onClick={onDone}>
+            <button className="btn btn-primary" onClick={() => onDone(picked)}>
               See results →
             </button>
           ) : (
@@ -336,7 +342,7 @@ function PracticeRun({ quiz, onDone, onExit }: { quiz: QuizItem[]; onDone: () =>
 
 /* ----------------------------------- Test ----------------------------------- */
 
-function TestRun({ quiz, onDone, onExit }: { quiz: QuizItem[]; onDone: () => void; onExit: () => void }) {
+function TestRun({ quiz, onDone, onExit }: { quiz: QuizItem[]; onDone: (picks: (number | null)[]) => void; onExit: () => void }) {
   const totalMs = quiz.length * 45_000;
   const startedAt = useRef(Date.now());
   const [now, setNow] = useState(() => Date.now());
@@ -347,10 +353,8 @@ function TestRun({ quiz, onDone, onExit }: { quiz: QuizItem[]; onDone: () => voi
   const finish = useCallback(() => {
     if (finished.current) return;
     finished.current = true;
-    // Write answers into the quiz items so Review can grade without more state.
-    quiz.forEach((q, idx) => ((q as QuizItem & { picked?: number | null }).picked = picked[idx]));
-    onDone();
-  }, [onDone, picked, quiz]);
+    onDone(picked);
+  }, [onDone, picked]);
 
   useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 250);
@@ -455,8 +459,7 @@ function TestRun({ quiz, onDone, onExit }: { quiz: QuizItem[]; onDone: () => voi
 
 /* ---------------------------------- Review ---------------------------------- */
 
-function Review({ mode, quiz, onAgain }: { mode: Mode; quiz: QuizItem[]; onAgain: () => void }) {
-  const picks = quiz.map((q) => (q as QuizItem & { picked?: number | null }).picked ?? null);
+function Review({ mode, quiz, picks, onAgain }: { mode: Mode; quiz: QuizItem[]; picks: (number | null)[]; onAgain: () => void }) {
   const score = quiz.filter((q, idx) => picks[idx] === q.answer).length;
   const pct = Math.round((score / Math.max(1, quiz.length)) * 100);
 
