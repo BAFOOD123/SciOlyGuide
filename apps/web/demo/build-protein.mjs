@@ -37,6 +37,7 @@ const css = (await postcss([tailwind({ base: web, optimize: true })]).process(cs
 const code = js.outputFiles[0].text.replace(/<\/script/gi, "<\\/script");
 const html = `<meta charset="utf-8">
 <title>Protein Model Studio</title>
+<link rel="artifact-thumbnail" href="thumb.png">
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Plan your Science Olympiad Protein Modeling pre-build (3UBE residues 153–252) in 3D.">
 <style>${css}</style>

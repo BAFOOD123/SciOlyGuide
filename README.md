@@ -66,24 +66,28 @@ page with the official description and a link to soinc.org.
 
 ## What's in Protein Modeling: the Model Studio
 
-A 3D workspace (`/protein-modeling/studio`, three.js) for designing the 2027 pre-build, **chain A
-residues 153–252 of PDB 3UBE** (H1N1 hemagglutinin, sialic acid binding site), before bending it.
+A 3D workspace (`/protein-modeling/studio`, three.js) for planning, folding and checking the 2027
+pre-build, **chain A residues 153–252 of PDB 3UBE** (H1N1 hemagglutinin, sialic acid binding site).
 
-- **The real structure at model scale.** The alpha-carbon backbone is drawn as a tube of your real
-  diameter, with an orthographic camera, a scale bar in model centimeters, a 50 cm fit box, and
-  Front/Back/Left/Right/Top/Bottom views (Front matches JUDE's default orientation). It colors by
-  your model, secondary structure, side-chain property or N→C. The bound receptor (LSTc, with its
-  sialic acid) sits in the pocket.
-- **Folding guide.** All 17 helix/strand/loop segments in order, with where each falls on the
-  200 cm of material, strand pairings, and end-to-end distances to bend to. Each one can be
-  highlighted in 3D and checked off. Prints a build sheet with every residue's mark.
-- **Inspect and measure.** Click any residue to see its property color, its mark in cm, its receptor
-  contacts and its side-chain interactions. The ruler measures any two alpha carbons in model cm.
-- **Features → legend.** Side chains (rule colors on the alpha carbon), interactions (salt bridges,
-  H-bonds, hydrophobic packing) and the receptor, plus one-click suggestions from the structure.
-  Each has What/How/Why and prints as the 8.5″ × 5.5″ Model Description Legend.
-- **Rule checks**, notes, and JSON export/import to share a design with a partner. Designs autosave
-  to the account (`protein_designs` table).
+- **The real structure at model scale.** The alpha-carbon backbone is drawn as a tube of your
+  tubing's diameter, with an orthographic camera, a scale bar in model centimeters, a 50 cm fit box
+  and Front/Back/Left/Right/Top/Bottom views (Front matches JUDE's default). Color by helix/strand,
+  your model's colors, side-chain property or N→C. The bound receptor (LSTc) sits in the pocket.
+  Hover shows the residue under the pointer; overlapping labels are hidden by priority.
+- **Build.** Prepare the tubing (cut length, where every mark goes, printable build sheet with the
+  bend angle at each mark), then fold 17 helix/strand/loop steps in order with real end-to-end
+  distances and strand pairings. **Build-along view** shows only what you've folded plus the current
+  step. **Fold checkpoints** (29 pairs of marks that touch in the real protein, with the distance
+  they should be apart) verify the tertiary fold, per step and as a full list.
+- **Inspect and measure.** Any residue's color, mark, bend angle, receptor contacts, side-chain
+  interactions and the residues the fold brings next to it; a ruler in model cm.
+- **Features → legend.** Side chains (rule colors), interactions and the receptor, with one-click
+  suggestions; each has What/How/Why. The legend preview shows whether it fits the 8.5″ × 5.5″
+  card before you print. Undo (button or Ctrl/⌘+Z), keyboard stepping (←/→, Esc).
+- **Rule checks**, notes, resources, JSON export/import to share with a partner. Designs autosave to
+  the account (`protein_designs`), retry after a failure and flush when the tab is hidden.
+
+Tests for the geometry and design logic: `npm test -w @sciolyguide/web`.
 
 `node apps/web/demo/build-protein.mjs` bundles the studio into one self-contained HTML page (no
 server) that saves to the viewer's claude.ai account when hosted as an Artifact, or to the browser.

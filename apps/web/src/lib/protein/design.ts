@@ -106,7 +106,7 @@ export function sideChainFeature(n: number): Feature {
     kind: "sidechain",
     residues: [n],
     color: prop.hex,
-    what: `${aa.name} ${n} side chain (${resLabel3(n)})`,
+    what: `${aa.name} ${n} side chain`,
     how: `${prop.colorName[0]!.toUpperCase()}${prop.colorName.slice(1)} (${aa.property}) marker on the alpha carbon`,
     why,
     inLegend: true,
@@ -129,7 +129,7 @@ export function interactionFeature(it: Interaction): Feature {
     interaction: it.type,
     color: info.hex,
     what: `${info.label}: ${resLabel3(it.a)} – ${resLabel3(it.b)}`,
-    how: `Both side chains shown in their property colors, joined by a ${info.label.toLowerCase()} connector`,
+    how: `Side chains in their property colors, joined by a ${info.label.toLowerCase()} connector`,
     why: WHY_BY_TYPE[it.type],
     inLegend: true,
   };
@@ -193,7 +193,7 @@ export function suggestions(design: ModelDesign): Suggestion[] {
     .filter((it) => it.type !== "hydrophobic" || it.contacts >= 4)
     .filter((it) => !shownPairs.has(`${it.type}:${it.a}-${it.b}`))
     .sort((x, y) => rankType(x.type) - rankType(y.type) || y.contacts - x.contacts);
-  for (const it of ranked.slice(0, 14)) {
+  for (const it of ranked) {
     out.push({
       key: `it-${it.type}-${it.a}-${it.b}`,
       title: `${INTERACTION_INFO[it.type].label}: ${resLabel3(it.a)}–${resLabel3(it.b)}`,

@@ -1,12 +1,17 @@
 /**
  * Where the standalone studio keeps a student's design: privately in their
  * claude.ai account when the page can (the `db` capability, under the viewer's
- * own `data/users/<id>/` space), otherwise in this browser.
+ * own `data/users/<id>/` space), otherwise in this browser. Visitors who can
+ * only view the page (for example through a public link) can't write to the
+ * account store, so they get browser storage, and a refused write falls back
+ * to it too.
  */
 import { parseDesign, type ModelDesign } from "@/lib/protein/design";
 import { use } from "./host";
 
 const LOCAL_KEY = "sog-protein-design-v1";
+
+export type StorageKind = "account" | "browser";
 
 export interface Loaded {
   design: ModelDesign;
@@ -14,9 +19,14 @@ export interface Loaded {
 }
 
 interface Backend {
-  kind: "account" | "browser";
+  kind: StorageKind;
   load(): Promise<Loaded>;
   save(d: ModelDesign): Promise<void>;
+}
+
+function parseStored(obj: unknown): Loaded {
+  const o = (obj ?? {}) as { design?: unknown; updatedAt?: unknown };
+  return { design: parseDesign(o.design), updatedAt: typeof o.updatedAt === "number" ? o.updatedAt : null };
 }
 
 function browserBackend(): Backend {
@@ -32,8 +42,7 @@ function browserBackend(): Backend {
       }
       if (!raw) return { design: parseDesign(null), updatedAt: null };
       try {
-        const obj = JSON.parse(raw);
-        return { design: parseDesign(obj.design), updatedAt: typeof obj.updatedAt === "number" ? obj.updatedAt : null };
+        return parseStored(JSON.parse(raw));
       } catch {
         return { design: parseDesign(null), updatedAt: null };
       }
@@ -43,44 +52,61 @@ function browserBackend(): Backend {
       try {
         localStorage.setItem(LOCAL_KEY, memory);
       } catch {
-        /* keep it in memory for this visit */
+        /* kept in memory for this visit */
       }
     },
   };
 }
 
+interface DocRef {
+  get(): Promise<{ exists: boolean; data(): Record<string, unknown> | undefined }>;
+  set(data: Record<string, unknown>): Promise<void>;
+}
+
 async function accountBackend(): Promise<Backend | null> {
   const [db, user] = await Promise.all([use<any>("db"), use<any>("user")]);
   if (!db || !user) return null;
-  let id: string | null = null;
-  try {
-    id = await user.id();
-  } catch {
-    id = null;
-  }
+  // can("data.write") === false: this viewer can only view the page, so writes would be refused.
+  const canWrite: boolean | null = await user.can?.("data.write").catch(() => null);
+  if (canWrite === false) return null;
+  const id: string | null = await user.id().catch(() => null);
   if (!id) return null;
-  const ref = db.collection(`data/users/${id}`).doc("protein-design");
+  const ref: DocRef = db.collection(`data/users/${id}`).doc("protein-design");
   let chain: Promise<void> = Promise.resolve();
   return {
     kind: "account",
     async load() {
       const snap = await ref.get();
-      if (!snap.exists) return { design: parseDesign(null), updatedAt: null };
-      const data = snap.data() ?? {};
-      return { design: parseDesign(data.design), updatedAt: typeof data.updatedAt === "number" ? data.updatedAt : null };
+      return snap.exists ? parseStored(snap.data()) : { design: parseDesign(null), updatedAt: null };
     },
     save(d) {
-      // One write at a time per document.
-      chain = chain.catch(() => {}).then(() => ref.set({ design: d, updatedAt: Date.now() }));
+      // One write at a time per document; retry once on a transient failure.
+      const write = async () => {
+        try {
+          await ref.set({ design: d, updatedAt: Date.now() });
+        } catch (e) {
+          if ((e as { code?: string })?.code !== "unavailable") throw e;
+          await new Promise((r) => setTimeout(r, 400 + Math.random() * 600));
+          await ref.set({ design: d, updatedAt: Date.now() });
+        }
+      };
+      chain = chain.catch(() => {}).then(write);
       return chain;
     },
   };
 }
 
 let active: Backend | null = null;
+const listeners = new Set<(k: StorageKind) => void>();
 
-/** Pick the storage and load the design. Falls back to this browser if the account store can't be read or written. */
-export async function connect(): Promise<Loaded & { kind: Backend["kind"] }> {
+/** Hear when saving moves from the account to this browser. */
+export function onStorageChange(fn: (k: StorageKind) => void): () => void {
+  listeners.add(fn);
+  return () => listeners.delete(fn);
+}
+
+/** Pick the storage and load the design. */
+export async function connect(): Promise<Loaded & { kind: StorageKind }> {
   const acct = await accountBackend().catch(() => null);
   if (acct) {
     try {
@@ -97,5 +123,17 @@ export async function connect(): Promise<Loaded & { kind: Backend["kind"] }> {
 
 export async function save(d: ModelDesign): Promise<void> {
   if (!active) throw new Error("not connected");
-  await active.save(d);
+  try {
+    await active.save(d);
+  } catch (e) {
+    const code = (e as { code?: string })?.code;
+    // A refused write (no permission) or a lost grant: keep working in this browser.
+    if (active.kind === "account" && code !== "unavailable" && code !== "resource_exhausted") {
+      active = browserBackend();
+      await active.save(d);
+      listeners.forEach((fn) => fn("browser"));
+      return;
+    }
+    throw e;
+  }
 }

@@ -138,7 +138,12 @@ export interface Segment {
   partners: { start: number; end: number; parallel: boolean }[];
 }
 
+let cachedSegments: Segment[] | null = null;
 export function segments(): Segment[] {
+  return (cachedSegments ??= buildSegments());
+}
+
+function buildSegments(): Segment[] {
   const out: Segment[] = [];
   let start = FIRST;
   for (let n = FIRST + 1; n <= LAST + 1; n++) {
@@ -331,4 +336,87 @@ export function composition(): Record<Property, number[]> {
   const out: Record<Property, number[]> = { hydrophobic: [], hydrophilic: [], acidic: [], basic: [], cysteine: [] };
   for (const r of RESIDUES) out[aminoAcid(r.aa).property].push(r.n);
   return out;
+}
+
+// ---------- folding geometry ----------
+
+/**
+ * The angle at residue n's alpha carbon between the backbone coming in and
+ * going out (degrees). 180° = straight; an α-helix is ≈ 90°, a β-strand ≈ 120°.
+ * Null at the two ends.
+ */
+export function bendAngle(n: number): number | null {
+  if (n <= FIRST || n >= LAST) return null;
+  const a = caPos(n - 1);
+  const b = caPos(n);
+  const c = caPos(n + 1);
+  const u = [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+  const v = [c[0] - b[0], c[1] - b[1], c[2] - b[2]];
+  const dot = u[0]! * v[0]! + u[1]! * v[1]! + u[2]! * v[2]!;
+  const cos = dot / (Math.hypot(u[0]!, u[1]!, u[2]!) * Math.hypot(v[0]!, v[1]!, v[2]!));
+  return (Math.acos(Math.max(-1, Math.min(1, cos))) * 180) / Math.PI;
+}
+
+/** Residues whose alpha carbons sit close to residue n but far along the chain: where the fold brings parts together. */
+export function nearbyResidues(n: number, maxAngstrom = 7, minSeqGap = 4): { n: number; cm: number; angstrom: number }[] {
+  const p = caPos(n);
+  return RESIDUES.filter((r) => Math.abs(r.n - n) >= minSeqGap)
+    .map((r) => {
+      const d = dist(p, caPos(r.n));
+      return { n: r.n, angstrom: d, cm: d * CM_PER_ANGSTROM };
+    })
+    .filter((x) => x.angstrom <= maxAngstrom)
+    .sort((a, b) => a.angstrom - b.angstrom);
+}
+
+export interface Checkpoint {
+  key: string;
+  a: number;
+  b: number;
+  angstrom: number;
+  cm: number;
+  /** The structures the two residues belong to, e.g. "β-strand 164–169". */
+  segA: string;
+  segB: string;
+}
+
+function segName(s: Segment): string {
+  return `${SS_INFO[s.ss].label} ${s.start === s.end ? s.start : `${s.start}–${s.end}`}`;
+}
+
+/**
+ * Tertiary-fold checkpoints: for every pair of segments that touch in the
+ * structure, the closest pair of alpha carbons (at least 5 residues apart).
+ * On a correct model these marks sit this far apart.
+ */
+export function checkpoints(maxAngstrom = 6.5): Checkpoint[] {
+  const segs = segments();
+  const segOf = (n: number) => segs.find((s) => n >= s.start && n <= s.end)!;
+  const best = new Map<string, Checkpoint>();
+  for (const ra of RESIDUES) {
+    for (const rb of RESIDUES) {
+      if (rb.n - ra.n < 5) continue;
+      const d = dist(caPos(ra.n), caPos(rb.n));
+      if (d > maxAngstrom) continue;
+      const sa = segOf(ra.n);
+      const sb = segOf(rb.n);
+      if (sa.index === sb.index) continue;
+      const key = `${sa.index}-${sb.index}`;
+      const cur = best.get(key);
+      if (!cur || d < cur.angstrom) {
+        best.set(key, { key: `cp-${ra.n}-${rb.n}`, a: ra.n, b: rb.n, angstrom: d, cm: d * CM_PER_ANGSTROM, segA: segName(sa), segB: segName(sb) });
+      }
+    }
+  }
+  return [...best.values()].sort((x, y) => x.a - y.a || x.b - y.b);
+}
+
+/** Display name for a segment, e.g. "α-helix 187–196". */
+export function segmentName(s: Segment): string {
+  return segName(s);
+}
+
+/** The segment holding residue n. */
+export function segmentOf(n: number): Segment {
+  return segments().find((s) => n >= s.start && n <= s.end)!;
 }
