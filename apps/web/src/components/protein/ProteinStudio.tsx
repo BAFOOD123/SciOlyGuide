@@ -39,6 +39,7 @@ import {
 } from "@/lib/protein/design";
 import { STRUCTURE } from "@/lib/protein/structure.generated";
 import { MoleculeViewer, type ColorMode, type DisplayOptions, type ViewerHandle, type ViewName } from "./MoleculeViewer";
+import { offerFile, PRINTS_DIRECTLY } from "@/components/protein/platform";
 import { printBuildSheet, printLegend } from "./print";
 
 type Tab = "inspect" | "features" | "build" | "legend" | "check";
@@ -71,7 +72,16 @@ const VIEW_BUTTONS: { id: ViewName; label: string }[] = [
 const STRUCTURE_SSBONDS = STRUCTURE.ssbonds;
 const pairKey = (type: string | undefined, residues: number[]) => `${type}:${[...residues].sort((a, b) => a - b).join("-")}`;
 
-export function ProteinStudio({ initial, savedAt }: { initial: ModelDesign; savedAt: number | null }) {
+export function ProteinStudio({
+  initial,
+  savedAt,
+  savedText = "Saved to your account",
+}: {
+  initial: ModelDesign;
+  savedAt: number | null;
+  /** What the save badge says once a save succeeds (where the design went). */
+  savedText?: string;
+}) {
   const [design, setDesign] = useState<ModelDesign>(initial);
   const [saveState, setSaveState] = useState<SaveState>(savedAt ? "saved" : "idle");
   const [tab, setTab] = useState<Tab>("build");
@@ -135,13 +145,12 @@ export function ProteinStudio({ initial, savedAt }: { initial: ModelDesign; save
     setFocus((f) => (f && f.start === s.start && f.end === s.end ? null : { start: s.start, end: s.end }));
   };
 
-  const screenshot = () => {
+  const [toolMsg, setToolMsg] = useState<string | null>(null);
+  const screenshot = async () => {
     const url = viewer.current?.screenshot();
     if (!url) return;
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "protein-model-view.png";
-    a.click();
+    const blob = await (await fetch(url)).blob();
+    setToolMsg(await offerFile("protein-model-view.png", blob));
   };
 
   return (
@@ -171,9 +180,10 @@ export function ProteinStudio({ initial, savedAt }: { initial: ModelDesign; save
           <button className="btn btn-secondary px-2.5 py-1 text-xs" onClick={screenshot}>
             Save image
           </button>
-          <SaveBadge state={saveState} />
+          <SaveBadge state={saveState} savedText={savedText} />
         </div>
 
+        {toolMsg && <p className="text-xs text-zinc-600 dark:text-zinc-400">{toolMsg}</p>}
         <div className="relative h-[58vh] min-h-[360px]">
           <MoleculeViewer
             design={design}
@@ -270,8 +280,8 @@ export function ProteinStudio({ initial, savedAt }: { initial: ModelDesign; save
 
 // =====================================================================
 
-function SaveBadge({ state }: { state: SaveState }) {
-  const text = { idle: "Not saved yet", saving: "Saving…", saved: "Saved to your account", error: "Couldn't save — retrying on next change" }[state];
+function SaveBadge({ state, savedText }: { state: SaveState; savedText: string }) {
+  const text = { idle: "Not saved yet", saving: "Saving…", saved: savedText, error: "Couldn't save — retrying on next change" }[state];
   const cls =
     state === "error"
       ? "text-red-600 dark:text-red-400"
@@ -787,9 +797,11 @@ function BuildPanel({
           </li>
           <li>Mark the helix and strand boundaries below, then fold them first, in order.</li>
         </ol>
-        <button className="btn btn-secondary w-full" onClick={() => printBuildSheet(design)}>
-          🖨 Print build sheet (every residue’s mark)
-        </button>
+        <PrintButton
+          className="btn btn-secondary w-full"
+          label="Print build sheet (every residue’s mark)"
+          run={() => printBuildSheet(design)}
+        />
       </div>
 
       <div>
@@ -850,23 +862,19 @@ function LegendPanel({ design, setDesign }: { design: ModelDesign; setDesign: (d
   const rows = design.features.filter((f) => f.inLegend);
   const fileRef = useRef<HTMLInputElement>(null);
   const [msg, setMsg] = useState<string | null>(null);
-  const exportJson = () => {
-    const blob = new Blob([JSON.stringify(design, null, 2)], { type: "application/json" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "protein-model-design.json";
-    a.click();
-    URL.revokeObjectURL(a.href);
+  const [pending, setPending] = useState<ModelDesign | null>(null);
+  const exportJson = async () => {
+    setMsg(await offerFile("protein-model-design.json", JSON.stringify(design, null, 2)));
   };
   const importJson = async (file: File) => {
     try {
       const raw = JSON.parse(await file.text());
       const d = parseDesign(raw);
       if (JSON.stringify(d) === JSON.stringify(defaultDesign()) || !raw || raw.v !== 1) throw new Error("bad");
-      if (!confirm("Replace your current design with the imported one?")) return;
-      setDesign(d);
-      setMsg("Imported.");
+      setPending(d);
+      setMsg(null);
     } catch {
+      setPending(null);
       setMsg("That file isn’t a SciOlyGuide protein design.");
     }
   };
@@ -902,9 +910,7 @@ function LegendPanel({ design, setDesign }: { design: ModelDesign; setDesign: (d
       <p className="text-xs text-zinc-500">
         Prints on 8.5″ × 5.5″ (half-letter) paper, as the rules require. Edit rows in the Features tab. {rows.length > 9 && "That’s a lot of rows — keep the text short so it stays readable."}
       </p>
-      <button className="btn btn-primary w-full" onClick={() => printLegend(design)}>
-        🖨 Print legend (8.5″ × 5.5″)
-      </button>
+      <PrintButton className="btn btn-primary w-full" label="Print legend (8.5″ × 5.5″)" run={() => printLegend(design)} />
       <div className="space-y-2 border-t border-zinc-200 pt-4 dark:border-zinc-800">
         <h3 className="font-semibold">Share with your partner</h3>
         <p className="text-xs text-zinc-500">Download your design as a file; your partner can import it into their account.</p>
@@ -927,6 +933,24 @@ function LegendPanel({ design, setDesign }: { design: ModelDesign; setDesign: (d
             }}
           />
         </div>
+        {pending && (
+          <div className="flex flex-wrap items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 p-2 text-xs dark:border-amber-800 dark:bg-amber-950/40">
+            <span className="min-w-0 flex-1">Replace your current design with “{pending.title}” ({pending.features.length} features)?</span>
+            <button
+              className="btn btn-primary px-2 py-1 text-xs"
+              onClick={() => {
+                setDesign(pending);
+                setPending(null);
+                setMsg("Imported.");
+              }}
+            >
+              Replace
+            </button>
+            <button className="btn btn-secondary px-2 py-1 text-xs" onClick={() => setPending(null)}>
+              Cancel
+            </button>
+          </div>
+        )}
         {msg && <p className="text-xs text-zinc-600 dark:text-zinc-400">{msg}</p>}
       </div>
     </div>
@@ -981,6 +1005,20 @@ function CheckPanel({
           onChange={(e) => update((d) => ({ ...d, notes: e.target.value }))}
         />
       </label>
+    </div>
+  );
+}
+
+/** Print in the app; in the standalone page, save a print-ready HTML file instead. */
+function PrintButton({ className, label, run }: { className: string; label: string; run: () => Promise<string | null> }) {
+  const [msg, setMsg] = useState<string | null>(null);
+  return (
+    <div className="space-y-1">
+      <button className={className} onClick={async () => setMsg(await run())}>
+        {PRINTS_DIRECTLY ? `🖨 ${label}` : `⬇ ${label.replace(/^Print /, "Save ")} to print`}
+      </button>
+      {!PRINTS_DIRECTLY && !msg && <p className="text-xs text-zinc-500">Saves a page that opens your print dialog when you open it.</p>}
+      {msg && <p className="text-xs text-zinc-600 dark:text-zinc-400">{msg}</p>}
     </div>
   );
 }

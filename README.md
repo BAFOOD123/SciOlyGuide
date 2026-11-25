@@ -85,6 +85,9 @@ residues 153–252 of PDB 3UBE** (H1N1 hemagglutinin, sialic acid binding site),
 - **Rule checks**, notes, and JSON export/import to share a design with a partner. Designs autosave
   to the account (`protein_designs` table).
 
+`node apps/web/demo/build-protein.mjs` bundles the studio into one self-contained HTML page (no
+server) that saves to the viewer's claude.ai account when hosted as an Artifact, or to the browser.
+
 The data comes from `apps/web/scripts/build-protein-data.mjs`, which turns the RCSB PDB file
 into `src/lib/protein/structure.generated.ts`. Interactions and contacts are computed in
 `src/lib/protein/analysis.ts`.
