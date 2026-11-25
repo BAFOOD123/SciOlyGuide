@@ -171,3 +171,17 @@ body {
 .guide-prose .guide-credit a {
   @apply font-normal text-zinc-400 no-underline hover:underline dark:text-zinc-500;
 }
+
+/* ===== Protein Modeling studio (3D labels) ===== */
+.pm-label {
+  @apply whitespace-nowrap rounded bg-black/55 px-1 py-px font-mono text-[10px] font-semibold text-slate-100;
+}
+.pm-label-selected {
+  @apply bg-brand-600 text-white;
+}
+.pm-label-receptor {
+  @apply bg-fuchsia-700/80 font-sans text-white;
+}
+.pm-label-measure {
+  @apply bg-white px-1.5 py-0.5 text-[11px] text-slate-900;
+}

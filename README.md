@@ -1,8 +1,8 @@
 # SciOlyGuide
 
 A **free** Science Olympiad study app for **Division C** students. Every event page is built
-around how that event is actually competed. **Codebusters and Rocks and Minerals are live**; the
-other Div C events are next.
+around how that event is actually competed. **Codebusters, Rocks and Minerals, Anatomy and
+Physiology and the Protein Modeling Model Studio are live**; the other Div C events are next.
 
 ## Home: choose your events
 
@@ -63,6 +63,31 @@ page with the official description and a link to soinc.org.
 - **Accounts that save everything.** Username + password only (no email collected). Puzzles in
   progress autosave and resume on any device. Each cipher tracks accuracy, median and best solve
   time, and streaks, and the app recommends your weakest cipher.
+
+## What's in Protein Modeling: the Model Studio
+
+A 3D workspace (`/protein-modeling/studio`, three.js) for designing the 2027 pre-build, **chain A
+residues 153–252 of PDB 3UBE** (H1N1 hemagglutinin, sialic acid binding site), before bending it.
+
+- **The real structure at model scale.** The alpha-carbon backbone is drawn as a tube of your real
+  diameter, with an orthographic camera, a scale bar in model centimeters, a 50 cm fit box, and
+  Front/Back/Left/Right/Top/Bottom views (Front matches JUDE's default orientation). It colors by
+  your model, secondary structure, side-chain property or N→C. The bound receptor (LSTc, with its
+  sialic acid) sits in the pocket.
+- **Folding guide.** All 17 helix/strand/loop segments in order, with where each falls on the
+  200 cm of material, strand pairings, and end-to-end distances to bend to. Each one can be
+  highlighted in 3D and checked off. Prints a build sheet with every residue's mark.
+- **Inspect and measure.** Click any residue to see its property color, its mark in cm, its receptor
+  contacts and its side-chain interactions. The ruler measures any two alpha carbons in model cm.
+- **Features → legend.** Side chains (rule colors on the alpha carbon), interactions (salt bridges,
+  H-bonds, hydrophobic packing) and the receptor, plus one-click suggestions from the structure.
+  Each has What/How/Why and prints as the 8.5″ × 5.5″ Model Description Legend.
+- **Rule checks**, notes, and JSON export/import to share a design with a partner. Designs autosave
+  to the account (`protein_designs` table).
+
+The data comes from `apps/web/scripts/build-protein-data.mjs`, which turns the RCSB PDB file
+into `src/lib/protein/structure.generated.ts`. Interactions and contacts are computed in
+`src/lib/protein/analysis.ts`.
 
 ## Layout
 

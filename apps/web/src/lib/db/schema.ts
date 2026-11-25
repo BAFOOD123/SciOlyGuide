@@ -193,6 +193,16 @@ export const anatomyAnswers = sqliteTable(
   (t) => [index("anatomy_answers_user_idx").on(t.userId, t.answeredAt)],
 );
 
+/** A student's digital Protein Modeling design (one per account). */
+export const proteinDesigns = sqliteTable("protein_designs", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => users.id, { onDelete: "cascade" }),
+  /** JSON ModelDesign (src/lib/protein/design.ts). */
+  data: text("data").notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
+});
+
 export type User = typeof users.$inferSelect;
 export type Attempt = typeof attempts.$inferSelect;
 export type TestRow = typeof tests.$inferSelect;
