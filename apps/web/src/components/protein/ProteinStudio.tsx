@@ -7,6 +7,7 @@ import {
   aminoAcid,
   caDistance,
   FIRST,
+  INTERACTION_INFO,
   LAST,
   modelExtentCm,
   PROPERTY_INFO,
@@ -624,6 +625,18 @@ function ColorKey() {
       </span>
       <span className="flex items-center gap-1.5">
         <span className="h-1.5 w-4" style={{ background: SS_INFO.L.hex }} /> loop
+      </span>
+      {(["salt-bridge", "h-bond", "hydrophobic"] as const).map((t) => (
+        <span key={t} className="flex items-center gap-1.5">
+          <span
+            className="h-1 w-5 rounded-full"
+            style={{ background: `repeating-linear-gradient(90deg, ${INTERACTION_INFO[t].hex} 0 5px, transparent 5px 8px)` }}
+          />
+          {INTERACTION_INFO[t].label}
+        </span>
+      ))}
+      <span className="basis-full text-zinc-500">
+        Bonds you add are labeled with the distance between their two marks on your model: the length of the connector.
       </span>
     </div>
   );

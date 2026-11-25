@@ -185,3 +185,7 @@ body {
 .pm-label-measure {
   @apply bg-white px-1.5 py-0.5 text-[11px] text-slate-900;
 }
+.pm-label-bond {
+  @apply font-sans text-white;
+  text-shadow: 0 1px 1px rgb(0 0 0 / 0.55);
+}

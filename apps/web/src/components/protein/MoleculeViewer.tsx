@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { CSS2DObject, CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer.js";
+import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { STRUCTURE } from "@/lib/protein/structure.generated";
 import {
   aminoAcid,
@@ -15,6 +16,7 @@ import {
   LAST,
   MAX_MODEL_CM,
   PROPERTY_INFO,
+  receptorBonds,
   RESIDUES,
   resLabel,
   resLabel3,
@@ -117,13 +119,56 @@ function cylinderBetween(a: THREE.Vector3, b: THREE.Vector3, radius: number, mat
   return mesh;
 }
 
-function dashedLine(a: THREE.Vector3, b: THREE.Vector3, color: string, opacity = 1): THREE.Line {
-  const geo = new THREE.BufferGeometry().setFromPoints([a, b]);
-  const mat = new THREE.LineDashedMaterial({ color, dashSize: 0.45, gapSize: 0.3, transparent: opacity < 1, opacity });
-  const line = new THREE.Line(geo, mat);
-  line.computeLineDistances();
-  return line;
+const Y_AXIS = new THREE.Vector3(0, 1, 0);
+
+/**
+ * A bond drawn as 3D dashes from a to b (trimmed `trim` Å at both ends so it
+ * starts at the surface of the balls it joins). Glows in its color, and with
+ * `xray` a faint copy shows through whatever is in front of it.
+ */
+function bond(
+  a: THREE.Vector3,
+  b: THREE.Vector3,
+  color: string,
+  { radius = 0.3, dash = 0.55, gap = 0.32, opacity = 1, xray = true, trim = 0 }: { radius?: number; dash?: number; gap?: number; opacity?: number; xray?: boolean; trim?: number } = {},
+): THREE.Group {
+  const g = new THREE.Group();
+  const dir = new THREE.Vector3().subVectors(b, a);
+  const len = dir.length();
+  const from = Math.min(trim, len / 2 - 0.3);
+  const to = len - from;
+  if (to - from < 0.3) return g;
+  // Center the dash pattern so both ends look the same.
+  const count = Math.max(1, Math.floor((to - from + gap) / (dash + gap)));
+  const used = count * dash + (count - 1) * gap;
+  let t = from + (to - from - used) / 2;
+  const pieces: THREE.BufferGeometry[] = [];
+  for (let i = 0; i < count; i++, t += dash + gap) {
+    const piece = new THREE.CylinderGeometry(radius, radius, dash, 10, 1);
+    piece.translate(0, t + dash / 2, 0);
+    pieces.push(piece);
+  }
+  const geo = mergeGeometries(pieces) ?? new THREE.BufferGeometry();
+  pieces.forEach((p) => p.dispose());
+  const q = new THREE.Quaternion().setFromUnitVectors(Y_AXIS, dir.normalize());
+  const solid = new THREE.Mesh(
+    geo,
+    new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.55, roughness: 0.4, transparent: opacity < 1, opacity }),
+  );
+  solid.position.copy(a);
+  solid.quaternion.copy(q);
+  g.add(solid);
+  if (xray) {
+    const ghost = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.42 * opacity, depthTest: false, depthWrite: false }));
+    ghost.position.copy(a);
+    ghost.quaternion.copy(q);
+    ghost.renderOrder = 5;
+    g.add(ghost);
+  }
+  return g;
 }
+
+const BOND_SHORT: Record<string, string> = { "salt-bridge": "salt bridge", "h-bond": "H-bond", hydrophobic: "hydrophobic", disulfide: "S–S" };
 
 /** Only what changes the 3D scene — so typing in a legend field doesn't rebuild it. */
 function sceneKeyOf(design: ModelDesign): string {
@@ -483,11 +528,11 @@ export function MoleculeViewer({ design, display, focus, buildTo, focusDim = 0.8
       };
       for (const [i, j] of lig.bonds) {
         const mid = new THREE.Vector3().addVectors(pts[i]!, pts[j]!).multiplyScalar(0.5);
-        c.content.add(cylinderBetween(pts[i]!, mid, 0.22, new THREE.MeshStandardMaterial({ color: atomColor(i) })));
-        c.content.add(cylinderBetween(mid, pts[j]!, 0.22, new THREE.MeshStandardMaterial({ color: atomColor(j) })));
+        c.content.add(cylinderBetween(pts[i]!, mid, 0.28, new THREE.MeshStandardMaterial({ color: atomColor(i) })));
+        c.content.add(cylinderBetween(mid, pts[j]!, 0.28, new THREE.MeshStandardMaterial({ color: atomColor(j) })));
       }
       pts.forEach((p, i) => {
-        const s = new THREE.Mesh(new THREE.SphereGeometry(0.32, 12, 8), new THREE.MeshStandardMaterial({ color: atomColor(i) }));
+        const s = new THREE.Mesh(new THREE.SphereGeometry(0.4, 14, 10), new THREE.MeshStandardMaterial({ color: atomColor(i) }));
         s.position.copy(p);
         c.content.add(s);
       });
@@ -500,22 +545,53 @@ export function MoleculeViewer({ design, display, focus, buildTo, focusDim = 0.8
       }
     }
 
-    // Interactions: the student's chosen ones solid, the rest faint (optional).
-    const chosenKeys = new Set(
-      design.features.filter((f) => f.kind === "interaction").map((f) => `${f.interaction}:${[...f.residues].sort((a, b) => a - b).join("-")}`),
+    // Interactions. Bonds you've added: thick, in the feature's color, labeled with the
+    // connector length. The selected residue's bonds: medium. Everything else ("All
+    // interactions"): thin. On the physical model side chains sit on the alpha carbons,
+    // so bonds run between those balls; with atoms showing, the real atom-to-atom contact too.
+    const chosenColor = new Map(
+      design.features
+        .filter((f) => f.kind === "interaction")
+        .map((f) => [`${f.interaction}:${[...f.residues].sort((a, b) => a - b).join("-")}`, f.color] as const),
     );
     for (const it of interactions()) {
       if (!built(it.b)) continue;
-      const isChosen = chosenKeys.has(`${it.type}:${it.a}-${it.b}`);
-      if (!isChosen && !display.allInteractions) continue;
-      // On the physical model the side chains sit on the alpha carbons, so draw CA→CA;
-      // with atoms showing, draw the actual atom→atom contact too.
-      const col = INTERACTION_INFO[it.type].hex;
-      c.content.add(dashedLine(caVec(it.a), caVec(it.b), col, isChosen ? 1 : 0.35));
-      if (display.atoms && isChosen) {
+      const featureColor = chosenColor.get(`${it.type}:${it.a}-${it.b}`);
+      const isChosen = featureColor != null;
+      const ofSelected = selected != null && (it.a === selected || it.b === selected);
+      if (!isChosen && !ofSelected && !display.allInteractions) continue;
+      const col = featureColor ?? INTERACTION_INFO[it.type].hex;
+      const a = caVec(it.a);
+      const b = caVec(it.b);
+      const dim = inFocus(it.a) || inFocus(it.b) ? 1 : 0.45;
+      if (isChosen) c.content.add(bond(a, b, col, { radius: 0.34, trim: ballR, opacity: dim }));
+      else if (ofSelected) c.content.add(bond(a, b, col, { radius: 0.24, trim: ballR * 0.75, opacity: 0.85 * dim }));
+      else c.content.add(bond(a, b, col, { radius: 0.15, dash: 0.4, gap: 0.3, opacity: 0.6 * dim, xray: false }));
+      if (display.atoms && (isChosen || ofSelected)) {
         const pa = atomPos(RESIDUES[it.a - FIRST]!, it.atomA);
         const pb = atomPos(RESIDUES[it.b - FIRST]!, it.atomB);
-        if (pa && pb) c.content.add(dashedLine(v3(pa), v3(pb), col));
+        if (pa && pb) c.content.add(bond(v3(pa), v3(pb), col, { radius: 0.14, dash: 0.3, gap: 0.2, trim: 0.35, xray: false }));
+      }
+      if (isChosen && display.labels && dim === 1) {
+        const cm = (a.distanceTo(b) * CM_PER_ANGSTROM).toFixed(1);
+        const l = label(`${BOND_SHORT[it.type]} · ${cm} cm`, "pm-label pm-label-bond", 3);
+        l.element.style.background = col;
+        l.position.addVectors(a, b).multiplyScalar(0.5).add(new THREE.Vector3(0, 0.9, 0));
+        c.content.add(l);
+      }
+    }
+
+    // Hydrogen bonds that grip the receptor, for side chains on the model and the selected residue.
+    if (display.receptor) {
+      const hb = INTERACTION_INFO["h-bond"].hex;
+      const lig = STRUCTURE.ligand.atoms;
+      for (const rb of receptorBonds()) {
+        if (!built(rb.n) || !(chosen.has(rb.n) || rb.n === selected)) continue;
+        const l = lig[rb.ligIndex]!;
+        const target = new THREE.Vector3(l[2], l[3], l[4]);
+        const pa = display.atoms ? atomPos(RESIDUES[rb.n - FIRST]!, rb.atom) : undefined;
+        if (pa) c.content.add(bond(v3(pa), target, hb, { radius: 0.16, dash: 0.32, gap: 0.22, trim: 0.35 }));
+        else c.content.add(bond(caVec(rb.n), target, hb, { radius: 0.2, dash: 0.4, gap: 0.28, trim: ballR }));
       }
     }
 
@@ -523,7 +599,7 @@ export function MoleculeViewer({ design, display, focus, buildTo, focusDim = 0.8
     if (measure.length === 2) {
       const a = caVec(measure[0]!);
       const b = caVec(measure[1]!);
-      c.content.add(dashedLine(a, b, "#ffffff"));
+      c.content.add(bond(a, b, "#ffffff", { radius: 0.2, dash: 0.5, gap: 0.35, trim: ballR * 1.2 }));
       const d = a.distanceTo(b);
       const l = label(`${(d * CM_PER_ANGSTROM).toFixed(1)} cm`, "pm-label pm-label-measure", 0);
       l.position.addVectors(a, b).multiplyScalar(0.5);
@@ -603,12 +679,12 @@ function addSideChainSticks(group: THREE.Group, n: number, carbon: THREE.Color) 
   for (const [i, j] of r.bonds) {
     if (!keep(r.atoms[i]![0]) || !keep(r.atoms[j]![0])) continue;
     const mid = new THREE.Vector3().addVectors(pts[i]!, pts[j]!).multiplyScalar(0.5);
-    group.add(cylinderBetween(pts[i]!, mid, 0.2, new THREE.MeshStandardMaterial({ color: color(i) })));
-    group.add(cylinderBetween(mid, pts[j]!, 0.2, new THREE.MeshStandardMaterial({ color: color(j) })));
+    group.add(cylinderBetween(pts[i]!, mid, 0.26, new THREE.MeshStandardMaterial({ color: color(i) })));
+    group.add(cylinderBetween(mid, pts[j]!, 0.26, new THREE.MeshStandardMaterial({ color: color(j) })));
   }
   r.atoms.forEach((a, i) => {
     if (!keep(a[0]) || a[0] === "CA") return;
-    const s = new THREE.Mesh(new THREE.SphereGeometry(0.3, 12, 8), new THREE.MeshStandardMaterial({ color: color(i) }));
+    const s = new THREE.Mesh(new THREE.SphereGeometry(0.38, 14, 10), new THREE.MeshStandardMaterial({ color: color(i) }));
     s.position.copy(pts[i]!);
     group.add(s);
   });

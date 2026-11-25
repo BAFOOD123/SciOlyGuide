@@ -185,7 +185,7 @@ export type InteractionType = "salt-bridge" | "h-bond" | "hydrophobic" | "disulf
 export const INTERACTION_INFO: Record<InteractionType, { label: string; hex: string; blurb: string }> = {
   "salt-bridge": { label: "Salt bridge", hex: "#a855f7", blurb: "An ionic bond between an acidic (−) and a basic (+) side chain." },
   "h-bond": { label: "Hydrogen bond", hex: "#06b6d4", blurb: "A side-chain N or O sharing a hydrogen with another N or O (≤ 3.5 Å)." },
-  hydrophobic: { label: "Hydrophobic packing", hex: "#f59e0b", blurb: "Nonpolar side chains packed together, away from water." },
+  hydrophobic: { label: "Hydrophobic packing", hex: "#f97316", blurb: "Nonpolar side chains packed together, away from water." },
   disulfide: { label: "Disulfide bond", hex: "#22c55e", blurb: "A covalent S–S bond between two cysteines." },
 };
 
@@ -419,4 +419,35 @@ export function segmentName(s: Segment): string {
 /** The segment holding residue n. */
 export function segmentOf(n: number): Segment {
   return segments().find((s) => n >= s.start && n <= s.end)!;
+}
+
+/** A side-chain hydrogen bond to the receptor (polar atoms within 3.5 Å). */
+export interface ReceptorBond {
+  n: number;
+  /** Side-chain atom name on the residue. */
+  atom: string;
+  /** Index into STRUCTURE.ligand.atoms. */
+  ligIndex: number;
+  distance: number;
+  /** Which sugar it reaches, e.g. "SIA". */
+  sugar: string;
+}
+
+let cachedReceptorBonds: ReceptorBond[] | null = null;
+/** Side-chain hydrogen bonds to the receptor, the closest one per residue and sugar atom. */
+export function receptorBonds(): ReceptorBond[] {
+  if (cachedReceptorBonds) return cachedReceptorBonds;
+  const lig = STRUCTURE.ligand.atoms;
+  const out: ReceptorBond[] = [];
+  for (const r of RESIDUES) {
+    for (const a of r.atoms) {
+      if (BACKBONE.has(a[0]) || (a[1] !== "N" && a[1] !== "O")) continue;
+      lig.forEach((l, i) => {
+        if (l[1] !== "N" && l[1] !== "O") return;
+        const d = Math.hypot(a[2] - l[2], a[3] - l[3], a[4] - l[4]);
+        if (d <= 3.5) out.push({ n: r.n, atom: a[0], ligIndex: i, distance: d, sugar: l[5] });
+      });
+    }
+  }
+  return (cachedReceptorBonds = out.sort((x, y) => x.n - y.n || x.distance - y.distance));
 }
