@@ -18,7 +18,16 @@ import {
   tooberCm,
   type Property,
 } from "@/lib/protein/analysis";
-import { defaultDesign, interactionFeature, shownSideChains, sideChainFeature, type Feature, type ModelDesign } from "@/lib/protein/design";
+import {
+  defaultDesign,
+  interactionFeature,
+  shownSideChains,
+  sideChainFeature,
+  sideChainStatus,
+  withoutSideChain,
+  type Feature,
+  type ModelDesign,
+} from "@/lib/protein/design";
 import { BuildPanel } from "./BuildPanel";
 import { CheckPanel } from "./CheckPanel";
 import { FeaturesPanel } from "./FeaturesPanel";
@@ -102,7 +111,6 @@ export function ProteinStudio({
   const [introHidden, setIntroHidden] = useState(true);
   const [display, setDisplay] = useState<DisplayOptions>({
     color: "ss",
-    atoms: false,
     allSideChains: false,
     receptor: true,
     allInteractions: false,
@@ -188,15 +196,45 @@ export function ProteinStudio({
   }, [toast]);
 
   const addFeature = (f: Feature) => commit({ ...design, features: [...design.features, f] }, `Added ${f.what || "a custom feature"}`);
-  const removeFeature = (f: Feature) =>
+  const addSideChain = (n: number) => {
+    if (!sideChainStatus(design, n).feature) addFeature(sideChainFeature(n));
+  };
+  /** Take a residue's side chain off the model, with the bonds that need it (undoable). */
+  const removeSideChain = (n: number) => {
+    const { design: next, bonds } = withoutSideChain(design, n);
+    if (next.features.length === design.features.length) return;
+    commit(next, `Removed ${resLabel3(n)} side chain${bonds ? ` and ${bonds} bond${bonds > 1 ? "s" : ""}` : ""}`);
+  };
+  const removeFeature = (f: Feature) => {
+    if (f.kind === "sidechain") return removeSideChain(f.residues[0]!);
     commit({ ...design, features: design.features.filter((x) => x.id !== f.id) }, `Removed ${f.what || "a feature"}`);
+  };
+  /** Remove every feature of one kind (side chains take their bonds with them). */
+  const removeGroup = (kind: Feature["kind"]) => {
+    let next = design;
+    let bonds = 0;
+    const of = design.features.filter((f) => f.kind === kind);
+    if (!of.length) return;
+    if (kind === "sidechain") {
+      for (const f of of) {
+        const r = withoutSideChain(next, f.residues[0]!);
+        next = r.design;
+        bonds += r.bonds;
+      }
+    } else next = { ...design, features: design.features.filter((f) => f.kind !== kind) };
+    const noun = { sidechain: "side chain", interaction: "bond", receptor: "receptor", backbone: "backbone row", custom: "custom feature" }[kind];
+    commit(next, `Removed ${of.length} ${noun}${of.length > 1 ? "s" : ""}${bonds ? ` and ${bonds} bond${bonds > 1 ? "s" : ""}` : ""}`);
+  };
   const patchFeature = (id: string, patch: Partial<Feature>) =>
     update((d) => ({ ...d, features: d.features.map((f) => (f.id === id ? { ...f, ...patch } : f)) }));
-  const toggleSideChain = (n: number) => {
-    const f = design.features.find((x) => x.kind === "sidechain" && x.residues[0] === n);
-    if (f) removeFeature(f);
-    else addFeature(sideChainFeature(n));
-  };
+  /** Which residues show their side-chain atoms in 3D. */
+  const setAtoms = (ns: number[], on: boolean) =>
+    update((d) => {
+      const set = new Set(d.atoms);
+      ns.forEach((n) => (on ? set.add(n) : set.delete(n)));
+      return { ...d, atoms: [...set].sort((a, b) => a - b) };
+    });
+  const toggleAtoms = (n: number) => setAtoms([n], !design.atoms.includes(n));
 
   // ---- picking, measuring, focus ----
   const onPick = useCallback(
@@ -220,6 +258,9 @@ export function ProteinStudio({
     else if (f.residues.length === 2) showPair(f.residues[0]!, f.residues[1]!);
   };
 
+  const removeSideChainRef = useRef(removeSideChain);
+  removeSideChainRef.current = removeSideChain;
+
   // ---- keyboard: Esc clears, ←/→ step through residues, Ctrl/⌘+Z undoes ----
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -233,6 +274,9 @@ export function ProteinStudio({
           setMeasure([]);
         } else if (focus) setFocus(null);
         else setSelected(null);
+      } else if ((e.key === "Delete" || e.key === "Backspace") && selected != null) {
+        e.preventDefault();
+        removeSideChainRef.current(selected);
       } else if ((e.key === "ArrowLeft" || e.key === "ArrowRight") && selected != null && !e.altKey && !e.metaKey && !e.ctrlKey) {
         const next = selected + (e.key === "ArrowLeft" ? -1 : 1);
         if (next >= FIRST && next <= LAST) {
@@ -350,6 +394,11 @@ export function ProteinStudio({
           {selected != null && !measureMode && (
             <SelectedBar
               n={selected}
+              onModel={shown.has(selected)}
+              atomsOn={design.atoms.includes(selected)}
+              onAdd={() => addSideChain(selected)}
+              onRemove={() => removeSideChain(selected)}
+              onToggleAtoms={() => toggleAtoms(selected)}
               onDetails={() => {
                 setTab("inspect");
                 document.getElementById("pm-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -357,7 +406,16 @@ export function ProteinStudio({
               onClose={() => setSelected(null)}
             />
           )}
-          <DisplayBar display={display} setDisplay={setDisplay} />
+          <DisplayBar
+            display={display}
+            setDisplay={setDisplay}
+            atoms={{
+              on: shown.size > 0 && [...shown].every((n) => design.atoms.includes(n)),
+              some: design.atoms.length > 0,
+              set: (on) => (on ? setAtoms([...shown], true) : update((d) => ({ ...d, atoms: [] }))),
+              disabled: shown.size === 0 && design.atoms.length === 0,
+            }}
+          />
           <SequenceStrip selected={selected} shown={shown} focus={viewFocus} buildTo={buildTo} measure={measure} onPick={onPick} />
           <ColorKey />
         </div>
@@ -403,14 +461,27 @@ export function ProteinStudio({
               <InspectPanel
                 n={selected}
                 design={design}
-                onToggleSideChain={toggleSideChain}
+                onAddSideChain={addSideChain}
+                onRemoveSideChain={removeSideChain}
+                onToggleAtoms={toggleAtoms}
+                onRemoveFeature={removeFeature}
                 onAddInteraction={(it) => addFeature(interactionFeature(it))}
                 onSelect={setSelected}
                 onMeasure={showPair}
               />
             )}
             {tab === "features" && (
-              <FeaturesPanel design={design} selected={selected} onAdd={addFeature} onPatch={patchFeature} onRemove={removeFeature} onShow={showFeature} />
+              <FeaturesPanel
+                design={design}
+                selected={selected}
+                onAdd={addFeature}
+                onPatch={patchFeature}
+                onRemove={removeFeature}
+                onRemoveGroup={removeGroup}
+                onShow={showFeature}
+                onToggleAtoms={toggleAtoms}
+                onSetAtoms={setAtoms}
+              />
             )}
             {tab === "legend" && <LegendPanel design={design} update={update} onImport={(d) => commit(d, `Imported “${d.title}”`)} />}
             {tab === "check" && (
@@ -471,23 +542,58 @@ function Intro({ onClose }: { onClose: () => void }) {
   );
 }
 
-/** Phones and tablets: the panel is far below the 3D view, so show the picked residue right here. */
-function SelectedBar({ n, onDetails, onClose }: { n: number; onDetails: () => void; onClose: () => void }) {
+/** The picked residue, right under the 3D view: add or remove its side chain and atoms without leaving the model. */
+function SelectedBar({
+  n,
+  onModel,
+  atomsOn,
+  onAdd,
+  onRemove,
+  onToggleAtoms,
+  onDetails,
+  onClose,
+}: {
+  n: number;
+  onModel: boolean;
+  atomsOn: boolean;
+  onAdd: () => void;
+  onRemove: () => void;
+  onToggleAtoms: () => void;
+  onDetails: () => void;
+  onClose: () => void;
+}) {
   const r = RESIDUES[n - FIRST]!;
   const aa = aminoAcid(r.aa);
   const p = PROPERTY_INFO[aa.property];
   return (
-    <div className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-white p-2 text-sm lg:hidden dark:border-zinc-800 dark:bg-zinc-900">
+    <div className="flex flex-wrap items-center gap-2 rounded-xl border border-zinc-200 bg-white p-2 text-sm dark:border-zinc-800 dark:bg-zinc-900">
       <span className="size-4 shrink-0 rounded-full border border-zinc-400" style={{ background: p.hex }} aria-hidden />
       <span className="min-w-0 flex-1 truncate">
         <strong>{resLabel3(n)}</strong> · {p.colorName} · {SS_INFO[r.ss].label} · mark {tooberCm(n)} cm
+        {onModel && <span className="ml-1.5 chip bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200">on your model</span>}
       </span>
-      <button className="btn btn-primary shrink-0 px-2.5 py-1 text-xs" onClick={onDetails}>
-        Details
-      </button>
-      <button className="btn btn-ghost shrink-0 px-2 py-1 text-xs" onClick={onClose} aria-label="Clear selection">
-        ✕
-      </button>
+      <span className="flex shrink-0 flex-wrap gap-1.5">
+        {onModel ? (
+          <button className="btn btn-secondary px-2.5 py-1 text-xs text-red-600 dark:text-red-400" onClick={onRemove} title="Remove (Delete key)">
+            Remove side chain
+          </button>
+        ) : (
+          <button className="btn btn-primary px-2.5 py-1 text-xs" onClick={onAdd}>
+            Add side chain
+          </button>
+        )}
+        {r.aa !== "GLY" && (
+          <button className={`btn px-2.5 py-1 text-xs ${atomsOn ? "btn-primary" : "btn-secondary"}`} onClick={onToggleAtoms} aria-pressed={atomsOn}>
+            {atomsOn ? "Hide atoms" : "Show atoms"}
+          </button>
+        )}
+        <button className="btn btn-secondary px-2.5 py-1 text-xs lg:hidden" onClick={onDetails}>
+          Details
+        </button>
+        <button className="btn btn-ghost px-2 py-1 text-xs" onClick={onClose} aria-label="Clear selection">
+          ✕
+        </button>
+      </span>
     </div>
   );
 }
@@ -503,11 +609,23 @@ function SaveBadge({ state, savedText }: { state: SaveState; savedText: string }
   );
 }
 
-function DisplayBar({ display, setDisplay }: { display: DisplayOptions; setDisplay: (fn: (d: DisplayOptions) => DisplayOptions) => void }) {
+function DisplayBar({
+  display,
+  setDisplay,
+  atoms,
+}: {
+  display: DisplayOptions;
+  setDisplay: (fn: (d: DisplayOptions) => DisplayOptions) => void;
+  /** The atoms checkbox: on = every side chain on the model shows atoms; partly = some residues do. */
+  atoms: { on: boolean; some: boolean; set: (on: boolean) => void; disabled: boolean };
+}) {
+  const atomsRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (atomsRef.current) atomsRef.current.indeterminate = atoms.some && !atoms.on;
+  }, [atoms.some, atoms.on]);
   const toggles: { key: keyof DisplayOptions; label: string }[] = [
     { key: "receptor", label: "Receptor" },
     { key: "labels", label: "Labels" },
-    { key: "atoms", label: "Side-chain atoms" },
     { key: "allSideChains", label: "All side chains" },
     { key: "allInteractions", label: "All interactions" },
     { key: "box", label: "50 cm box" },
@@ -528,6 +646,22 @@ function DisplayBar({ display, setDisplay }: { display: DisplayOptions; setDispl
             </option>
           ))}
         </select>
+      </label>
+      <label
+        className={`flex items-center gap-1.5 ${atoms.disabled ? "text-zinc-400" : "cursor-pointer"}`}
+        htmlFor="pm-show-atoms"
+        title={atoms.disabled ? "Add side chains first, or pick a residue and choose Show atoms" : "Show or hide the atoms of every side chain on your model. Pick a residue to choose one at a time."}
+      >
+        <input
+          ref={atomsRef}
+          id="pm-show-atoms"
+          type="checkbox"
+          className="accent-brand-600"
+          disabled={atoms.disabled}
+          checked={atoms.on}
+          onChange={(e) => atoms.set(e.target.checked)}
+        />
+        Side-chain atoms{atoms.some && !atoms.on ? " (some)" : ""}
       </label>
       {toggles.map((t) => (
         <label key={t.key} className="flex cursor-pointer items-center gap-1.5" htmlFor={`pm-show-${t.key}`}>

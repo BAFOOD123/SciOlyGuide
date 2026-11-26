@@ -16,7 +16,19 @@ import {
   tooberCm,
   TOOBER_LENGTH_CM,
 } from "../src/lib/protein/analysis";
-import { defaultDesign, designSchema, parseDesign, receptorFeature, ruleChecks, sideChainFeature, suggestions } from "../src/lib/protein/design";
+import {
+  defaultDesign,
+  designSchema,
+  interactionFeature,
+  parseDesign,
+  receptorFeature,
+  ruleChecks,
+  shownSideChains,
+  sideChainFeature,
+  sideChainStatus,
+  suggestions,
+  withoutSideChain,
+} from "../src/lib/protein/design";
 
 describe("structure data", () => {
   it("has all 100 residues of chain A 153–252 in order", () => {
@@ -158,5 +170,23 @@ describe("design", () => {
     expect(checks.legend).toBe(false);
     expect(checks.gray).toBe(false);
     expect(checks.size).toBe(true);
+  });
+  it("loads designs saved before atoms were per-residue", () => {
+    const old = JSON.parse(JSON.stringify(defaultDesign()));
+    delete old.atoms;
+    expect(parseDesign(old).atoms).toEqual([]);
+  });
+  it("removes a side chain together with the bonds that need it and its atoms", () => {
+    const d = defaultDesign();
+    const bridge = interactions().find((i) => i.type === "salt-bridge" && i.a === 222 && i.b === 225)!;
+    d.features.push(sideChainFeature(225), interactionFeature(bridge), sideChainFeature(183));
+    d.atoms = [183, 225];
+    expect(sideChainStatus(d, 225).bonds).toHaveLength(1);
+    const { design: next, bonds } = withoutSideChain(d, 225);
+    expect(bonds).toBe(1);
+    expect(shownSideChains(next).has(225)).toBe(false);
+    expect(shownSideChains(next).has(222)).toBe(false); // its partner was only there for the bond
+    expect(shownSideChains(next).has(183)).toBe(true);
+    expect(next.atoms).toEqual([183]);
   });
 });

@@ -31,8 +31,6 @@ export type ViewName = "front" | "back" | "left" | "right" | "top" | "bottom";
 
 export interface DisplayOptions {
   color: ColorMode;
-  /** Draw side-chain atoms (sticks) for the side chains on the model. */
-  atoms: boolean;
   /** Show every side chain as a property-colored ball, not just the chosen ones. */
   allSideChains: boolean;
   receptor: boolean;
@@ -172,7 +170,7 @@ const BOND_SHORT: Record<string, string> = { "salt-bridge": "salt bridge", "h-bo
 
 /** Only what changes the 3D scene — so typing in a legend field doesn't rebuild it. */
 function sceneKeyOf(design: ModelDesign): string {
-  return JSON.stringify([design.backbone, design.features.map((f) => [f.kind, f.residues, f.interaction ?? "", f.color])]);
+  return JSON.stringify([design.backbone, design.atoms, design.features.map((f) => [f.kind, f.residues, f.interaction ?? "", f.color])]);
 }
 
 export function MoleculeViewer({ design, display, focus, buildTo, focusDim = 0.82, selected, measure, onPick, onReady }: Props) {
@@ -489,6 +487,8 @@ export function MoleculeViewer({ design, display, focus, buildTo, focusDim = 0.8
 
     // Side chains: property-colored ball on the alpha carbon (+ optional atoms).
     const chosen = shownSideChains(design);
+    // Side-chain atoms are drawn only for the residues the student picked.
+    const withAtoms = new Set(design.atoms.filter((n) => built(n)));
     const ballR = radiusA * 1.35;
     for (const r of RESIDUES) {
       if (!built(r.n)) continue;
@@ -501,8 +501,10 @@ export function MoleculeViewer({ design, display, focus, buildTo, focusDim = 0.8
       ball.position.copy(caVec(r.n));
       ball.userData.pick = true;
       c.content.add(ball);
-      if (display.atoms && isChosen) addSideChainSticks(c.content, r.n, col);
+      if (withAtoms.has(r.n)) addSideChainSticks(c.content, r.n, col);
     }
+
+    for (const n of withAtoms) if (!chosen.has(n) && !display.allSideChains) addSideChainSticks(c.content, n, new THREE.Color("#cbd5e1"));
 
     // Selected residue halo.
     if (selected != null && built(selected)) {
@@ -512,7 +514,6 @@ export function MoleculeViewer({ design, display, focus, buildTo, focusDim = 0.8
       );
       halo.position.copy(caVec(selected));
       c.content.add(halo);
-      if (display.atoms && !chosen.has(selected)) addSideChainSticks(c.content, selected, new THREE.Color("#cbd5e1"));
     }
 
     // The receptor (LSTc glycan; sialic acid emphasized).
@@ -567,7 +568,7 @@ export function MoleculeViewer({ design, display, focus, buildTo, focusDim = 0.8
       if (isChosen) c.content.add(bond(a, b, col, { radius: 0.34, trim: ballR, opacity: dim }));
       else if (ofSelected) c.content.add(bond(a, b, col, { radius: 0.24, trim: ballR * 0.75, opacity: 0.85 * dim }));
       else c.content.add(bond(a, b, col, { radius: 0.15, dash: 0.4, gap: 0.3, opacity: 0.6 * dim, xray: false }));
-      if (display.atoms && (isChosen || ofSelected)) {
+      if (withAtoms.has(it.a) && withAtoms.has(it.b) && (isChosen || ofSelected)) {
         const pa = atomPos(RESIDUES[it.a - FIRST]!, it.atomA);
         const pb = atomPos(RESIDUES[it.b - FIRST]!, it.atomB);
         if (pa && pb) c.content.add(bond(v3(pa), v3(pb), col, { radius: 0.14, dash: 0.3, gap: 0.2, trim: 0.35, xray: false }));
@@ -589,7 +590,7 @@ export function MoleculeViewer({ design, display, focus, buildTo, focusDim = 0.8
         if (!built(rb.n) || !(chosen.has(rb.n) || rb.n === selected)) continue;
         const l = lig[rb.ligIndex]!;
         const target = new THREE.Vector3(l[2], l[3], l[4]);
-        const pa = display.atoms ? atomPos(RESIDUES[rb.n - FIRST]!, rb.atom) : undefined;
+        const pa = withAtoms.has(rb.n) ? atomPos(RESIDUES[rb.n - FIRST]!, rb.atom) : undefined;
         if (pa) c.content.add(bond(v3(pa), target, hb, { radius: 0.16, dash: 0.32, gap: 0.22, trim: 0.35 }));
         else c.content.add(bond(caVec(rb.n), target, hb, { radius: 0.2, dash: 0.4, gap: 0.28, trim: ballR }));
       }

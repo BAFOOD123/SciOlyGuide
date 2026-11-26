@@ -49,6 +49,8 @@ export const designSchema = z.object({
     accentSS: z.boolean(),
   }),
   features: z.array(featureSchema).max(80),
+  /** Residues whose side-chain atoms are drawn in 3D (older designs have none). */
+  atoms: z.array(z.number().int().min(FIRST).max(LAST)).max(100).default([]),
   /** Build steps checked off (segment index or checklist key → done). */
   progress: z.record(z.string().max(40), z.boolean()),
   notes: text(4000),
@@ -76,6 +78,7 @@ export function defaultDesign(): ModelDesign {
         inLegend: true,
       },
     ],
+    atoms: [],
     progress: {},
     notes: "",
   };
@@ -212,6 +215,31 @@ function rankType(t: InteractionType): number {
 // ---------- side chains shown on the model ----------
 
 /** Every residue whose side chain the model shows (side-chain and interaction features). */
+/** How residue n's side chain is on the model: its own feature, and/or bonds that show it. */
+export function sideChainStatus(design: ModelDesign, n: number): { feature: Feature | null; bonds: Feature[] } {
+  return {
+    feature: design.features.find((f) => f.kind === "sidechain" && f.residues[0] === n) ?? null,
+    bonds: design.features.filter((f) => f.kind === "interaction" && f.residues.includes(n)),
+  };
+}
+
+/**
+ * Take residue n's side chain off the model: its side-chain feature, the bonds that
+ * need it, and its visible atoms. Returns the new design and how many bonds went.
+ */
+export function withoutSideChain(design: ModelDesign, n: number): { design: ModelDesign; bonds: number } {
+  const { bonds } = sideChainStatus(design, n);
+  const drop = new Set(bonds.map((f) => f.id));
+  return {
+    design: {
+      ...design,
+      features: design.features.filter((f) => !(f.kind === "sidechain" && f.residues[0] === n) && !drop.has(f.id)),
+      atoms: design.atoms.filter((x) => x !== n),
+    },
+    bonds: bonds.length,
+  };
+}
+
 export function shownSideChains(design: ModelDesign): Set<number> {
   const s = new Set<number>();
   for (const f of design.features) if (f.kind === "sidechain" || f.kind === "interaction") f.residues.forEach((n) => s.add(n));

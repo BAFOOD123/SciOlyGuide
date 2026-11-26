@@ -84,6 +84,10 @@ pre-build, **chain A residues 153–252 of PDB 3UBE** (H1N1 hemagglutinin, siali
 - **Features → legend.** Side chains (rule colors), interactions and the receptor, with one-click
   suggestions; each has What/How/Why. The legend preview shows whether it fits the 8.5″ × 5.5″
   card before you print. Undo (button or Ctrl/⌘+Z), keyboard stepping (←/→, Esc).
+- **Editing.** Features are grouped (side chains, bonds, receptor and other) with a remove button on
+  every row and "Remove all" per group; the residue bar under the 3D view adds or removes the picked
+  residue's side chain (Delete key too). Removing a side chain also removes the bonds that need it.
+  Side-chain atoms are chosen per residue (bar, Inspect, feature rows, or all at once), and saved.
 - **Rule checks**, notes, resources, JSON export/import to share with a partner. Designs autosave to
   the account (`protein_designs`), retry after a failure and flush when the tab is hidden.
 

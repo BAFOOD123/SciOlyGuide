@@ -21,7 +21,7 @@ import {
   type Interaction,
   type Property,
 } from "@/lib/protein/analysis";
-import type { ModelDesign } from "@/lib/protein/design";
+import { sideChainStatus, type Feature, type ModelDesign } from "@/lib/protein/design";
 import { STRUCTURE } from "@/lib/protein/structure.generated";
 import { pairKey, PropDot, ResButton } from "./ui";
 
@@ -35,14 +35,20 @@ function bendWords(deg: number): string {
 export function InspectPanel({
   n,
   design,
-  onToggleSideChain,
+  onAddSideChain,
+  onRemoveSideChain,
+  onToggleAtoms,
+  onRemoveFeature,
   onAddInteraction,
   onSelect,
   onMeasure,
 }: {
   n: number | null;
   design: ModelDesign;
-  onToggleSideChain: (n: number) => void;
+  onAddSideChain: (n: number) => void;
+  onRemoveSideChain: (n: number) => void;
+  onToggleAtoms: (n: number) => void;
+  onRemoveFeature: (f: Feature) => void;
   onAddInteraction: (it: Interaction) => void;
   onSelect: (n: number) => void;
   onMeasure: (a: number, b: number) => void;
@@ -56,8 +62,10 @@ export function InspectPanel({
   const angle = bendAngle(n);
   const contact = receptorContacts().find((c) => c.n === n);
   const mine = interactions().filter((it) => it.a === n || it.b === n);
-  const added = new Set(design.features.filter((f) => f.kind === "interaction").map((f) => pairKey(f.interaction, f.residues)));
-  const hasSideChain = design.features.some((f) => f.kind === "sidechain" && f.residues[0] === n);
+  const addedBonds = new Map(design.features.filter((f) => f.kind === "interaction").map((f) => [pairKey(f.interaction, f.residues), f] as const));
+  const status = sideChainStatus(design, n);
+  const onModel = !!status.feature || status.bonds.length > 0;
+  const atomsOn = design.atoms.includes(n);
   const ss = STRUCTURE.ssbonds.filter((s) => s.residue === n);
   const near = nearbyResidues(n).slice(0, 5);
 
@@ -118,9 +126,50 @@ export function InspectPanel({
         ))}
       </dl>
 
-      <button className={`btn w-full ${hasSideChain ? "btn-secondary" : "btn-primary"}`} onClick={() => onToggleSideChain(n)}>
-        {hasSideChain ? "Remove side chain from my model" : `Add a ${prop.colorName} side chain to my model`}
-      </button>
+      <section className="space-y-2 rounded-xl border border-zinc-200 p-3 dark:border-zinc-800" aria-label="Side chain on your model">
+        <p className="font-semibold">
+          {onModel ? (
+            <>
+              <span className="text-emerald-700 dark:text-emerald-400">✓</span> Side chain on your model
+            </>
+          ) : (
+            "Side chain not on your model"
+          )}
+        </p>
+        {!status.feature && status.bonds.length > 0 && (
+          <p className="text-xs text-zinc-600 dark:text-zinc-400">
+            Shown because of{" "}
+            {status.bonds
+              .map((b) => `the ${b.interaction ? INTERACTION_INFO[b.interaction].label.toLowerCase() : "bond"} with ${resLabel3(b.residues.find((x) => x !== n) ?? n)}`)
+              .join(" and ")}
+            . It has no legend row of its own.
+          </p>
+        )}
+        <div className="flex flex-wrap gap-2">
+          {onModel ? (
+            <button className="btn btn-secondary flex-1 text-red-600 dark:text-red-400" onClick={() => onRemoveSideChain(n)} title="Delete key">
+              Remove side chain{status.bonds.length ? ` and ${status.bonds.length} bond${status.bonds.length > 1 ? "s" : ""}` : ""}
+            </button>
+          ) : (
+            <button className="btn btn-primary flex-1" onClick={() => onAddSideChain(n)}>
+              Add a {prop.colorName} side chain
+            </button>
+          )}
+          {onModel && !status.feature && (
+            <button className="btn btn-secondary flex-1" onClick={() => onAddSideChain(n)}>
+              Give it a legend row
+            </button>
+          )}
+        </div>
+        {r.aa === "GLY" ? (
+          <p className="text-xs text-zinc-500">Glycine’s side chain is a single hydrogen, so there are no side-chain atoms to show.</p>
+        ) : (
+          <label className="flex cursor-pointer items-center gap-2 text-sm" htmlFor="pm-inspect-atoms">
+            <input id="pm-inspect-atoms" type="checkbox" className="accent-brand-600" checked={atomsOn} onChange={() => onToggleAtoms(n)} />
+            Show this side chain’s atoms in 3D
+          </label>
+        )}
+      </section>
 
       {near.length > 0 && (
         <div>
@@ -149,7 +198,7 @@ export function InspectPanel({
           {mine.map((it) => {
             const other = it.a === n ? it.b : it.a;
             const info = INTERACTION_INFO[it.type];
-            const isAdded = added.has(pairKey(it.type, [it.a, it.b]));
+            const bondFeature = addedBonds.get(pairKey(it.type, [it.a, it.b]));
             return (
               <li key={`${it.type}-${it.a}-${it.b}`} className="flex items-center gap-2 rounded-lg border border-zinc-200 px-2 py-1.5 dark:border-zinc-800">
                 <span className="size-2.5 shrink-0 rounded-full" style={{ background: info.hex }} aria-hidden />
@@ -159,9 +208,15 @@ export function InspectPanel({
                     {it.atomA}…{it.atomB} {it.distance.toFixed(1)} Å · marks {caDistance(it.a, it.b).cm.toFixed(1)} cm apart
                   </span>
                 </span>
-                <button className="btn btn-secondary shrink-0 px-2 py-1 text-xs" disabled={isAdded} onClick={() => onAddInteraction(it)}>
-                  {isAdded ? "Added" : "+ Add"}
-                </button>
+                {bondFeature ? (
+                  <button className="btn btn-secondary shrink-0 px-2 py-1 text-xs text-red-600 dark:text-red-400" onClick={() => onRemoveFeature(bondFeature)}>
+                    Remove
+                  </button>
+                ) : (
+                  <button className="btn btn-secondary shrink-0 px-2 py-1 text-xs" onClick={() => onAddInteraction(it)}>
+                    + Add
+                  </button>
+                )}
               </li>
             );
           })}
